@@ -3,9 +3,18 @@
 @section('content')
     <a class="back-link" href="{{ $member->exists ? route('members.show', $member) : route('members.index') }}">Back to {{ $member->exists ? 'profile' : 'members' }}</a>
     <header class="page-heading">
-        <h1>{{ $member->exists ? 'Edit Member' : 'Add Member' }}</h1>
+        <div><h1>{{ $member->exists ? 'Edit Member' : 'Add Member' }}</h1>
+        @if($member->exists)<p class="muted member-number">{{ $member->membership_number }}</p>@endif</div>
     </header>
 
+    @if($errors->any())
+        <div class="error-summary" role="alert">
+            <strong>Member details could not be saved.</strong>
+            <ul>@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>
+        </div>
+    @endif
+
+    <div class="member-editor">
     <form class="member-form" action="{{ $member->exists ? route('members.update', $member) : route('members.store') }}" method="POST">
         @csrf
         @if($member->exists) @method('PUT') @endif
@@ -50,11 +59,11 @@
                     @error('membership_category_id') <p class="error" id="category-error">{{ $message }}</p> @enderror
                 </div>
                 <div class="field">
-                    <label for="membership_level_id">Level</label>
+                    <label for="membership_level_id">Level and fee (PHP)</label>
                     <select id="membership_level_id" name="membership_level_id" required
                             @error('membership_level_id') aria-invalid="true" aria-describedby="level-error" @enderror>
                         @foreach($levels as $level)
-                            <option value="{{ $level->id }}" @selected((string) old('membership_level_id', $member->membership_level_id ?? $levels->firstWhere('name', 'Basic')?->id) === (string) $level->id)>{{ $level->name }}</option>
+                            <option value="{{ $level->id }}" @selected((string) old('membership_level_id', $member->membership_level_id ?? $levels->firstWhere('name', 'Basic')?->id) === (string) $level->id)>{{ $level->name }} - &#8369;{{ number_format($level->fee, 2) }}</option>
                         @endforeach
                     </select>
                     @error('membership_level_id') <p class="error" id="level-error">{{ $message }}</p> @enderror
@@ -66,4 +75,24 @@
             <a class="button secondary-button" href="{{ $member->exists ? route('members.show', $member) : route('members.index') }}">Cancel</a>
         </div>
     </form>
+    <aside class="level-reference" aria-labelledby="level-reference-heading">
+        <h2 id="level-reference-heading">Membership Levels</h2>
+        <ul class="level-reference-list">
+            @foreach($levels as $level)
+                @php
+                    $selected = (string) old('membership_level_id', $member->membership_level_id ?? $levels->firstWhere('name', 'Basic')?->id) === (string) $level->id;
+                    $tone = match ($level->name) { 'Silver' => 'silver', 'Gold' => 'gold', 'Platinum' => 'platinum', default => 'basic' };
+                @endphp
+                <li data-reference-level="{{ $level->id }}" class="{{ $selected ? 'is-selected' : '' }}">
+                    <div><span class="level-badge level-{{ $tone }}">{{ $level->name }}</span><span class="selected-label" @if(!$selected) hidden @endif>Selected</span></div>
+                    <span class="level-price">&#8369;{{ number_format($level->fee, 2) }}</span>
+                </li>
+            @endforeach
+        </ul>
+    </aside>
+    </div>
 @endsection
+
+@push('scripts')
+    <script src="{{ asset('js/member-form.js') }}" defer></script>
+@endpush

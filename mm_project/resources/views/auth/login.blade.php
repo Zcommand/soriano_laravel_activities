@@ -2,6 +2,7 @@
 @section('title', 'Staff Login')
 @section('page-class', 'login-page')
 @section('content')
+    <span class="login-mark" aria-hidden="true">MM</span>
     <h1>Staff Login</h1>
     <form action="{{ route('login.store') }}" method="POST" class="login-form">
         @csrf

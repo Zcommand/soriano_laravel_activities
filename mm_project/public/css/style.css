@@ -288,11 +288,11 @@ td {
 
 /* Membership pages; existing task styles remain unchanged. */
 body.membership-app {
-    --background: #f5f6fa;
-    --border: #e0e4ec;
-    --muted: #637085;
-    --orange: #f59e0b;
-    color: #181b22;
+    --background: #f4f5f4;
+    --border: #dce1de;
+    --muted: #5c6863;
+    --orange: #f5b52f;
+    color: #202823;
     font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
@@ -319,14 +319,14 @@ body.membership-app {
 }
 
 .membership-app .site-header {
-    background: #fff;
-    border-bottom: 1px solid var(--border);
+    background: #202823;
+    border-bottom: 3px solid var(--orange);
 }
 
 .membership-app .header-inner {
     max-width: 1248px;
     margin: auto;
-    padding: 18px 24px;
+    padding: 12px 24px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -334,9 +334,12 @@ body.membership-app {
 }
 
 .membership-app .brand {
-    color: #181b22;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    color: #fff;
     text-decoration: none;
-    font-size: 17px;
+    font-size: 15px;
     font-weight: 700;
     overflow-wrap: anywhere;
 }
@@ -356,6 +359,44 @@ body.membership-app {
     text-decoration: none;
 }
 
+.membership-app .site-header nav a,
+.membership-app .site-header .text-button {
+    color: #c8d1cb;
+}
+
+.membership-app .site-header nav a:hover,
+.membership-app .site-header .text-button:hover {
+    color: #fff;
+}
+
+.membership-app .brand-mark,
+.membership-app .login-mark {
+    display: inline-grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    background: var(--orange);
+    color: #202823;
+    font-size: 13px;
+    font-weight: 800;
+    border-radius: 4px;
+}
+
+.membership-app .skip-link {
+    position: fixed;
+    top: 8px;
+    left: 8px;
+    z-index: 10;
+    padding: 12px 18px;
+    background: #fff;
+    transform: translateY(-150%);
+}
+
+.membership-app .skip-link:focus {
+    transform: translateY(0);
+}
+
 .membership-app .site-header nav a {
     display: inline-flex;
     align-items: center;
@@ -364,7 +405,7 @@ body.membership-app {
 }
 
 .membership-app nav [aria-current] {
-    color: #181b22;
+    color: #fff;
     font-weight: 700;
     border-bottom-color: var(--orange);
 }
@@ -380,7 +421,7 @@ body.membership-app {
 .membership-app .page {
     max-width: 1248px;
     margin: auto;
-    padding: 36px 24px 60px;
+    padding: 40px 24px 60px;
 }
 
 .membership-app .page-heading {
@@ -388,7 +429,7 @@ body.membership-app {
     align-items: center;
     justify-content: space-between;
     gap: 20px;
-    margin-bottom: 28px;
+    margin-bottom: 30px;
 }
 
 .membership-app h1 {
@@ -404,10 +445,8 @@ body.membership-app {
 
 .membership-app .count {
     color: var(--muted);
-    background: #fff;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 4px 10px;
+    border-left: 1px solid #bdc7bf;
+    padding: 3px 0 3px 18px;
     white-space: nowrap;
 }
 
@@ -418,9 +457,9 @@ body.membership-app {
     min-height: 44px;
     padding: 10px 18px;
     border: 1px solid transparent;
-    border-radius: 6px;
+    border-radius: 4px;
     background: var(--orange);
-    color: #261d08;
+    color: #202823;
     font-weight: 650;
     text-decoration: none;
     cursor: pointer;
@@ -429,17 +468,21 @@ body.membership-app {
 }
 
 .membership-app .button:hover {
-    background: #e49308;
+    background: #e7a51d;
+}
+
+.membership-app .button:active {
+    transform: translateY(1px);
 }
 
 .membership-app .secondary-button {
     background: #fff;
     border-color: var(--border);
-    color: #303b4e;
+    color: #303d35;
 }
 
 .membership-app .secondary-button:hover {
-    background: #edf0f5;
+    background: #eef2ef;
 }
 
 .membership-app .filters {
@@ -447,7 +490,10 @@ body.membership-app {
     grid-template-columns: minmax(220px, 2fr) repeat(3, minmax(130px, 1fr)) auto;
     align-items: end;
     gap: 14px;
-    padding-bottom: 24px;
+    padding: 22px 0;
+    margin-bottom: 14px;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
 }
 
 .membership-app .field {
@@ -457,7 +503,7 @@ body.membership-app {
 
 .membership-app label {
     display: block;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 650;
     margin-bottom: 7px;
 }
@@ -467,8 +513,8 @@ body.membership-app {
     min-width: 0;
     min-height: 44px;
     padding: 10px 12px;
-    border: 1px solid #cdd4df;
-    border-radius: 6px;
+    border: 1px solid #bcc8bf;
+    border-radius: 4px;
     background: #fff;
     color: inherit;
 }
@@ -476,6 +522,24 @@ body.membership-app {
 .membership-app input,
 .membership-app select {
     height: 44px;
+}
+
+.membership-app select {
+    appearance: none;
+    padding-right: 42px;
+    background-image: linear-gradient(45deg, transparent 50%, #44564a 50%),
+        linear-gradient(135deg, #44564a 50%, transparent 50%);
+    background-position: calc(100% - 20px) 50%, calc(100% - 15px) 50%;
+    background-size: 5px 5px;
+    background-repeat: no-repeat;
+}
+
+@media (forced-colors: active) {
+    .membership-app select {
+        appearance: auto;
+        background-image: none;
+        padding-right: 12px;
+    }
 }
 
 .membership-app input::placeholder {
@@ -495,9 +559,9 @@ body.membership-app {
     min-height: 44px;
     padding: 10px 14px;
     border: 1px solid var(--border);
-    border-radius: 6px;
+    border-radius: 4px;
     background: #fff;
-    color: #303b4e;
+    color: #303d35;
     text-decoration: none;
 }
 
@@ -508,13 +572,13 @@ body.membership-app {
 }
 
 .membership-app .reset-link:hover {
-    background: #edf0f5;
+    background: #eef2ef;
 }
 
 .membership-app .table-scroll {
     overflow-x: auto;
     border: 1px solid var(--border);
-    border-radius: 6px;
+    border-radius: 4px;
     background: #fff;
     max-width: 100%;
     scrollbar-color: #abb5c4 #f5f6fa;
@@ -533,10 +597,10 @@ body.membership-app {
 }
 
 .membership-app th {
-    background: #eef0f6;
+    background: #fff;
     color: var(--muted);
-    text-transform: uppercase;
-    font-size: 11px;
+    text-transform: none;
+    font-size: 12px;
     font-weight: 650;
 }
 
@@ -552,8 +616,140 @@ body.membership-app {
 }
 
 .membership-app .member-name {
-    color: #181b22;
+    color: #202823;
     font-weight: 650;
+    text-decoration: none;
+}
+
+.membership-app .member-name:hover {
+    text-decoration: underline;
+}
+
+.membership-app .member-identity,
+.membership-app .profile-heading {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.membership-app .member-identity > div,
+.membership-app .profile-heading > div {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.membership-app .member-initial {
+    display: inline-grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    flex: 0 0 36px;
+    border-radius: 4px;
+    background: #eaf0eb;
+    color: #315540;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.membership-app .profile-initial {
+    width: 56px;
+    height: 56px;
+    flex-basis: 56px;
+    background: #202823;
+    color: var(--orange);
+    font-size: 18px;
+}
+
+.membership-app .level-badge {
+    display: inline-block;
+    padding: 3px 9px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 650;
+}
+
+.membership-app .level-basic {
+    background: #eff1ed;
+    color: #4b5546;
+}
+
+.membership-app .level-silver {
+    background: #e9edf3;
+    color: #4c5d73;
+}
+
+.membership-app .level-gold {
+    background: #fff0c2;
+    color: #79520a;
+}
+
+.membership-app .level-platinum {
+    background: #dff2ef;
+    color: #22665d;
+}
+
+.membership-app .member-editor {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 280px;
+    align-items: start;
+    gap: 48px;
+}
+
+.membership-app .member-editor .member-form {
+    max-width: none;
+    min-width: 0;
+}
+
+.membership-app .level-reference {
+    min-width: 0;
+    padding-top: 5px;
+}
+
+.membership-app .level-reference-list {
+    margin: 20px 0 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--border);
+}
+
+.membership-app .level-reference-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    min-height: 76px;
+    padding: 14px 12px;
+    border-bottom: 1px solid var(--border);
+}
+
+.membership-app .level-reference-list .is-selected {
+    background: #fff;
+    box-shadow: inset 3px 0 var(--orange);
+}
+
+.membership-app .selected-label {
+    display: block;
+    margin-top: 4px;
+    font-size: 11px;
+    color: var(--muted);
+}
+
+.membership-app .selected-label[hidden] {
+    display: none;
+}
+
+.membership-app .level-price {
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+@media (hover: hover) {
+    .membership-app tbody tr:hover {
+        background: #fafcf9;
+    }
 }
 
 .membership-app .secondary {
@@ -567,6 +763,7 @@ body.membership-app {
     font-size: 12px;
     overflow-wrap: anywhere;
     font-variant-numeric: tabular-nums;
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
 }
 
 .membership-app .actions-column {
@@ -582,14 +779,26 @@ body.membership-app {
     display: inline-flex;
     align-items: center;
     min-height: 44px;
+    font-weight: 600;
 }
 
 .membership-app .status {
     display: inline-block;
     padding: 3px 9px;
-    border-radius: 6px;
+    border-radius: 4px;
     font-size: 12px;
     font-weight: 650;
+}
+
+.membership-app .status::before {
+    content: "";
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    margin-right: 7px;
+    background: currentColor;
+    vertical-align: middle;
 }
 
 .membership-app .active {
@@ -605,7 +814,15 @@ body.membership-app {
 .membership-app .empty {
     text-align: center;
     color: var(--muted);
-    padding: 48px 20px;
+    padding: 60px 20px;
+}
+
+.membership-app .empty strong {
+    display: block;
+    margin-bottom: 18px;
+    color: #303d35;
+    font-size: 16px;
+    font-weight: 600;
 }
 
 .membership-app .pagination {
@@ -621,8 +838,12 @@ body.membership-app {
 }
 
 .membership-app .back-link {
-    display: inline-block;
-    margin-bottom: 20px;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    margin-bottom: 12px;
+    color: var(--muted);
+    font-size: 13px;
 }
 
 .membership-app .member-form, .membership-app .profile {
@@ -630,7 +851,7 @@ body.membership-app {
 }
 
 .membership-app fieldset {
-    padding: 24px 0;
+    padding: 28px 0;
     margin: 0;
     border: 0;
     border-top: 1px solid var(--border);
@@ -657,12 +878,23 @@ body.membership-app {
 }
 
 .membership-app .profile {
-    border-top: 1px solid var(--border);
+    border-top: 3px solid var(--orange);
     padding-top: 24px;
 }
 
 .membership-app .profile-grid {
     margin: 24px 0 0;
+}
+
+.membership-app .profile-grid > div {
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--border);
+}
+
+.membership-app .fee-value {
+    font-size: 22px;
+    font-weight: 650;
+    font-variant-numeric: tabular-nums;
 }
 
 .membership-app dt {
@@ -723,6 +955,16 @@ body.membership-app {
 
 .membership-app .error-summary {
     margin-bottom: 20px;
+    max-width: 800px;
+    padding: 16px 20px;
+    border-left: 3px solid #b0253b;
+    background: #fff1f2;
+    font-size: 13px;
+}
+
+.membership-app .error-summary ul {
+    margin: 8px 0 0;
+    padding-left: 18px;
 }
 
 .membership-app [aria-invalid="true"] {
@@ -730,13 +972,20 @@ body.membership-app {
 }
 
 .membership-app :focus-visible {
-    outline: 3px solid #9dbaff;
+    outline: 3px solid #477b62;
     outline-offset: 3px;
 }
 
 .membership-app .login-page {
     max-width: 460px;
     padding-top: 70px;
+}
+
+.membership-app .login-mark {
+    margin-bottom: 24px;
+    width: 56px;
+    height: 56px;
+    font-size: 17px;
 }
 
 .membership-app .login-form {
@@ -754,6 +1003,11 @@ body.membership-app {
 }
 
 @media (max-width: 1000px) {
+
+    .membership-app .member-editor {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 32px;
+    }
 
     .membership-app .filters {
         grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -810,6 +1064,10 @@ body.membership-app {
     }
 
     .membership-app .filter-actions > * {
+        flex: 1;
+    }
+
+    .membership-app .form-actions > * {
         flex: 1;
     }
 

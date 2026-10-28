@@ -10,6 +10,52 @@ use Illuminate\Support\Facades\DB;
 
 uses(RefreshDatabase::class);
 
+it('offers registration for an empty directory and clearing for unmatched filters', function () {
+    $this->actingAs(User::factory()->administrator()->create())
+        ->get(route('members.index'))->assertOk()
+        ->assertSee('Register your first member')->assertDontSee('Clear filters');
+
+    $this->get(route('members.index', ['search' => 'No match']))->assertOk()
+        ->assertSee('Clear filters')->assertDontSee('Register your first member');
+});
+
+it('identifies the member in deactivation confirmation and labels account status', function () {
+    $member = Member::factory()->create(['first_name' => 'Jamie', 'last_name' => 'Soriano']);
+
+    $this->actingAs(User::factory()->administrator()->create())
+        ->get(route('members.show', $member))->assertOk()
+        ->assertSee('Account status')->assertSee('Deactivate <strong>Jamie Soriano</strong>', false)
+        ->assertSee('('.$member->membership_number.')?');
+});
+
+it('shows a validation summary while preserving submitted member details', function () {
+    $this->actingAs(User::factory()->administrator()->create())
+        ->followingRedirects()
+        ->from(route('members.create'))
+        ->post(route('members.store'), memberPayload(['email' => 'invalid']))
+        ->assertOk()
+        ->assertSee('Member details could not be saved.')
+        ->assertSee('value="Jamie"', false)->assertSee('value="invalid"', false);
+});
+
+it('stores and displays the peso fees for membership levels', function () {
+    $this->actingAs(User::factory()->administrator()->create());
+    $form = $this->get(route('members.create'))->assertOk()
+        ->assertSee('Membership Levels')->assertSee('js/member-form.js');
+
+    foreach (['Basic' => '200.00', 'Silver' => '400.00', 'Gold' => '600.00', 'Platinum' => '1000.00'] as $name => $fee) {
+        $level = MembershipLevel::where('name', $name)->firstOrFail();
+        expect($level->fee)->toBe($fee);
+        $form->assertSee($name.' - &#8369;'.number_format((float) $fee, 2), false);
+
+        $member = Member::factory()->for($level, 'level')->create();
+        $this->get(route('members.show', $member))->assertOk()
+            ->assertSee('Membership fee')->assertSee('&#8369;'.number_format((float) $fee, 2), false);
+        $this->get(route('members.edit', $member))->assertOk()
+            ->assertSee($name.' - &#8369;'.number_format((float) $fee, 2), false);
+    }
+});
+
 function memberPayload(array $overrides = []): array
 {
     return array_merge([

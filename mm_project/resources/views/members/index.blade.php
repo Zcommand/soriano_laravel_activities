@@ -4,7 +4,7 @@
     <header class="page-heading">
         <div class="heading-title">
             <h1>Members</h1>
-            <span class="count">{{ $members->total() }} {{ $members->total() === 1 ? 'member' : 'members' }}</span>
+            <span class="count">{{ $members->total() }} {{ request()->anyFilled(['search', 'category', 'level', 'status']) ? 'results' : ($members->total() === 1 ? 'member' : 'members') }}</span>
         </div>
         <a class="button" href="{{ route('members.create') }}">Add Member</a>
     </header>
@@ -33,7 +33,7 @@
             </select>
         </div>
         <div class="field status-field">
-            <label for="status">Status</label>
+            <label for="status">Account status</label>
             <select id="status" name="status">
                 <option value="">All statuses</option>
                 <option value="active" @selected(request('status') === 'active')>Active</option>
@@ -61,22 +61,29 @@
                     <th scope="col">Membership number</th>
                     <th scope="col">Category</th>
                     <th scope="col">Level</th>
-                    <th scope="col">Status</th>
+                    <th scope="col">Account status</th>
                     <th scope="col" class="actions-column">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($members as $member)
                     <tr>
-                        <td><a class="member-name" href="{{ route('members.show', $member) }}">{{ $member->first_name }} {{ $member->last_name }}</a><span class="secondary">{{ $member->email }}</span></td>
+                        <td><div class="member-identity"><span class="member-initial" aria-hidden="true">{{ mb_substr($member->first_name, 0, 1) }}{{ mb_substr($member->last_name, 0, 1) }}</span><div><a class="member-name" href="{{ route('members.show', $member) }}">{{ $member->first_name }} {{ $member->last_name }}</a><span class="secondary">{{ $member->email }}</span></div></div></td>
                         <td class="member-number">{{ $member->membership_number }}</td>
                         <td>{{ $member->category->name }}</td>
-                        <td>{{ $member->level->name }}</td>
+                        <td><span class="level-badge level-{{ match ($member->level->name) { 'Silver' => 'silver', 'Gold' => 'gold', 'Platinum' => 'platinum', default => 'basic' } }}">{{ $member->level->name }}</span></td>
                         <td><span class="status {{ $member->is_active ? 'active' : 'inactive' }}">{{ $member->is_active ? 'Active' : 'Inactive' }}</span></td>
                         <td><div class="row-actions"><a href="{{ route('members.show', $member) }}" aria-label="View {{ $member->first_name }} {{ $member->last_name }}">View</a><a href="{{ route('members.edit', $member) }}" aria-label="Edit {{ $member->first_name }} {{ $member->last_name }}">Edit</a></div></td>
                     </tr>
                 @empty
-                    <tr><td colspan="6" class="empty">No members found.</td></tr>
+                    <tr><td colspan="6" class="empty">
+                        <strong>No members found.</strong>
+                        @if(request()->anyFilled(['search', 'category', 'level', 'status']))
+                            <a class="button secondary-button" href="{{ route('members.index') }}">Clear filters</a>
+                        @else
+                            <a class="button secondary-button" href="{{ route('members.create') }}">Register your first member</a>
+                        @endif
+                    </td></tr>
                 @endforelse
             </tbody>
         </table>

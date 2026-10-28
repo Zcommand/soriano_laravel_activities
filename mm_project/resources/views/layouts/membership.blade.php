@@ -4,12 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Members') | Membership Management</title>
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}?v=members-2">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}?v=members-5">
 </head>
 <body class="membership-app">
+    <a class="skip-link" href="#main-content">Skip to content</a>
     <header class="site-header">
         <div class="header-inner">
-            <a class="brand" href="{{ route('members.index') }}">Membership Management</a>
+            <a class="brand" href="{{ route('members.index') }}"><span class="brand-mark" aria-hidden="true">MM</span><span>Membership Management</span></a>
             <nav aria-label="Main navigation">
                 @auth
                     <a href="{{ route('members.index') }}" @if(request()->routeIs('members.*')) aria-current="page" @endif>Members</a>
@@ -24,11 +25,12 @@
             </nav>
         </div>
     </header>
-    <main class="page @yield('page-class')">
+    <main id="main-content" class="page @yield('page-class')" tabindex="-1">
         @if(session('success'))
             <p class="notice" role="status">{{ session('success') }}</p>
         @endif
         @yield('content')
     </main>
+    @stack('scripts')
 </body>
 </html>
