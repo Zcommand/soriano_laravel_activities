@@ -287,8 +287,10 @@ it('returns not found for unknown member profiles', function () {
         ->get(route('members.show', 99999))->assertNotFound();
 });
 
-it('keeps the original tasks exercise available', function () {
-    $this->get(route('tasks.index'))->assertOk()->assertSee('My Tasks');
+it('does not expose the retired tasks exercise', function () {
+    $this->get('/tasks')->assertNotFound();
+    $this->post('/tasks')->assertNotFound();
+    $this->get('/tasks/1')->assertNotFound();
 });
 
 it('shortens legacy numbers without changing details and is safe to rerun', function () {

@@ -14,13 +14,12 @@
             <nav aria-label="Main navigation">
                 @auth
                     <a href="{{ route('members.index') }}" @if(request()->routeIs('members.*')) aria-current="page" @endif>Members</a>
-                    <a href="{{ route('tasks.index') }}">Tasks exercise</a>
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf
                         <button class="text-button" type="submit">Sign out</button>
                     </form>
                 @else
-                    <a href="{{ route('tasks.index') }}">Tasks exercise</a>
+                    <a href="{{ route('login') }}">Staff Login</a>
                 @endauth
             </nav>
         </div>
