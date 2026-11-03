@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthenticatedSessionController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\LevelController;
 use App\Http\Controllers\MemberController;
 use Illuminate\Support\Facades\Route;
 
@@ -20,4 +22,6 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
 Route::middleware(['auth', 'can:manage-members'])->group(function (): void {
     Route::patch('/members/{member}/activate', [MemberController::class, 'activate'])->name('members.activate');
     Route::resource('members', MemberController::class);
+    Route::resource('categories', CategoryController::class)->except('show');
+    Route::resource('levels', LevelController::class)->except('show');
 });

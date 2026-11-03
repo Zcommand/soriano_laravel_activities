@@ -1791,3 +1791,69 @@ html[data-theme="dark"] .membership-app .error-summary {
         transition: none;
     }
 }
+
+/* Category and level management share the workspace's theme and spacing. */
+.membership-app .settings-note {
+    color: var(--muted);
+    margin: 0 0 24px;
+    max-width: 70ch;
+}
+.membership-app .settings-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+.membership-app .settings-record {
+    min-width: 0;
+    padding: 22px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    overflow-wrap: anywhere;
+}
+.membership-app .settings-record-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+}
+.membership-app .settings-record-heading > span { white-space: nowrap; }
+.membership-app .settings-facts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 0;
+}
+.membership-app .settings-facts dt { color: var(--muted); font-size: 13px; }
+.membership-app .settings-facts dd { margin: 4px 0 0; }
+.membership-app .settings-fee { font-size: 24px; font-weight: 650; }
+.membership-app .settings-benefits { white-space: pre-wrap; color: var(--muted); }
+.membership-app .settings-actions {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+.membership-app .settings-delete { flex: 1; min-width: 130px; }
+.membership-app .settings-delete summary {
+    color: var(--error);
+    cursor: pointer;
+    min-height: 44px;
+    padding: 11px 0;
+}
+.membership-app .settings-delete form {
+    margin-top: 8px;
+    display: grid;
+    gap: 12px;
+}
+.membership-app .settings-form { max-width: 720px; display: grid; gap: 20px; }
+.membership-app .settings-pagination { display: flex; align-items: center; gap: 16px; margin-top: 24px; }
+@media (max-width: 600px) {
+    .membership-app .settings-list { grid-template-columns: minmax(0, 1fr); }
+    .membership-app .settings-record { padding: 18px; }
+    .membership-app .settings-record-heading { flex-wrap: wrap; gap: 6px; }
+}

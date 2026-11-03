@@ -12,11 +12,11 @@ class MembershipLevel extends Model
     /** @use HasFactory<MembershipLevelFactory> */
     use HasFactory;
 
-    protected $fillable = ['name', 'fee'];
+    protected $fillable = ['name', 'fee', 'validity_days', 'benefits'];
 
     protected function casts(): array
     {
-        return ['fee' => 'decimal:2'];
+        return ['fee' => 'decimal:2', 'validity_days' => 'integer'];
     }
 
     public function members(): HasMany

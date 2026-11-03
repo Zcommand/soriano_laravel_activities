@@ -6,7 +6,7 @@
     <title>@yield('title', 'Members') | Membership Management</title>
     <link rel="icon" type="image/png" href="{{ asset('images/brand/logo-symbol.png') }}">
     <script src="{{ asset('js/theme.js') }}"></script>
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}?v=members-17">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}?v=members-18">
 </head>
 <body class="membership-app {{ request()->routeIs('login', 'login.store') ? '' : 'workspace-page' }}">
     <svg class="brand-filters" width="0" height="0" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
@@ -28,6 +28,8 @@
             <nav aria-label="Main navigation">
                 @auth
                     <a href="{{ route('members.index') }}" @if(request()->routeIs('members.*')) aria-current="page" @endif><span>Members</span><span class="nav-arrow" aria-hidden="true">&rarr;</span></a>
+                    <a href="{{ route('categories.index') }}" @if(request()->routeIs('categories.*')) aria-current="page" @endif><span>Categories</span><span class="nav-arrow" aria-hidden="true">&rarr;</span></a>
+                    <a href="{{ route('levels.index') }}" @if(request()->routeIs('levels.*')) aria-current="page" @endif><span>Levels</span><span class="nav-arrow" aria-hidden="true">&rarr;</span></a>
                 @else
                     <a href="{{ route('login') }}">Staff Login</a>
                 @endauth
