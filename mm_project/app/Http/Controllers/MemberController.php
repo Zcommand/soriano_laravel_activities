@@ -30,6 +30,7 @@ class MemberController extends Controller
                     $query->whereLike('first_name', '%'.$search.'%')
                         ->orWhereLike('last_name', '%'.$search.'%')
                         ->orWhereLike('email', '%'.$search.'%')
+                        ->orWhereLike('company_name', '%'.$search.'%')
                         ->orWhereLike('membership_number', '%'.$search.'%')
                         ->orWhere(function (Builder $names) use ($search): void {
                             foreach (preg_split('/\s+/', trim($search)) as $part) {
@@ -46,10 +47,16 @@ class MemberController extends Controller
             ->when($filters['status'] ?? null, fn (Builder $query, $status) => $query->where('is_active', $status === 'active'))
             ->latest('id')->paginate(10)->withQueryString();
 
+        $statusCounts = Member::select('is_active')
+            ->selectRaw('COUNT(*) as total')->groupBy('is_active')->pluck('total', 'is_active');
+        $active = (int) $statusCounts->get(1, 0);
+        $inactive = (int) $statusCounts->get(0, 0);
+
         return view('members.index', [
             'members' => $members,
+            'summary' => ['total' => $active + $inactive, 'active' => $active, 'inactive' => $inactive],
             'categories' => MembershipCategory::orderBy('id')->get(),
-            'levels' => MembershipLevel::orderBy('id')->get(),
+            'levels' => MembershipLevel::withCount('members')->orderBy('id')->get(),
         ]);
     }
 

@@ -10,6 +10,137 @@ use Illuminate\Support\Facades\DB;
 
 uses(RefreshDatabase::class);
 
+it('renders the directory with labeled mobile records and working member actions', function () {
+    $member = Member::factory()->create();
+    $this->actingAs(User::factory()->administrator()->create())
+        ->get(route('members.index'))->assertOk()
+        ->assertSee('Member directory')
+        ->assertSee('data-label="Membership number"', false)
+        ->assertSee('data-label="Account status"', false)
+        ->assertSee(route('members.show', $member))
+        ->assertSee(route('members.edit', $member));
+});
+
+it('shows zero member totals and identifies the signed-in administrator', function () {
+    $staff = User::factory()->administrator()->create(['name' => 'Jamie Staff']);
+    $this->actingAs($staff)->get(route('members.index'))->assertOk()
+        ->assertSee('Administrator')->assertSee('Jamie Staff')
+        ->assertViewHas('summary', ['total' => 0, 'active' => 0, 'inactive' => 0])
+        ->assertViewHas('levels', fn ($levels) => $levels->every(fn ($level) => $level->members_count === 0));
+});
+
+it('counts all accounts and levels independently of filters and pagination', function () {
+    $levels = MembershipLevel::orderBy('id')->get()->keyBy('name');
+    Member::factory()->count(11)->create(['membership_level_id' => $levels['Basic']->id]);
+    Member::factory()->inactive()->create(['membership_level_id' => $levels['Silver']->id]);
+    Member::factory()->create(['membership_level_id' => $levels['Gold']->id]);
+
+    $this->actingAs(User::factory()->administrator()->create());
+    foreach ([[], ['status' => 'inactive'], ['search' => 'no-such-person'], ['page' => 2]] as $filters) {
+        $this->get(route('members.index', $filters))->assertOk()
+            ->assertViewHas('summary', ['total' => 13, 'active' => 12, 'inactive' => 1])
+            ->assertViewHas('levels', function ($levels): bool {
+                return $levels->pluck('members_count', 'name')->all() === [
+                    'Basic' => 11, 'Silver' => 1, 'Gold' => 1, 'Platinum' => 0,
+                ];
+            });
+    }
+});
+
+it('updates the overview after deactivation and reactivation', function () {
+    $member = Member::factory()->create();
+    $this->actingAs(User::factory()->administrator()->create());
+    $this->delete(route('members.destroy', $member))->assertRedirect();
+    $this->get(route('members.index'))->assertOk()
+        ->assertViewHas('summary', ['total' => 1, 'active' => 0, 'inactive' => 1]);
+
+    $this->patch(route('members.activate', $member))->assertRedirect();
+    $this->get(route('members.index'))->assertOk()
+        ->assertViewHas('summary', ['total' => 1, 'active' => 1, 'inactive' => 0]);
+});
+
+it('provides theme controls and logo variants without adding navigation to login', function () {
+    $this->get(route('login'))->assertOk()
+        ->assertSee('logo-horizontal-light.png')
+        ->assertDontSee('logo-horizontal-dark.png')
+        ->assertSee('class="login-logo logo-dark"', false)
+        ->assertSee('js/theme.js')->assertSee('data-theme-toggle', false)
+        ->assertDontSee('workspace-sidebar')
+        ->assertDontSee('aria-label="Main navigation"', false);
+
+    $this->actingAs(User::factory()->administrator()->create())
+        ->get(route('members.index'))->assertOk()
+        ->assertSee('logo-horizontal-light.png')
+        ->assertSee('class="workspace-sidebar"', false)
+        ->assertSee('aria-controls="workspace-navigation"', false)
+        ->assertSee('js/workspace.js')
+        ->assertSee('aria-label="Main navigation"', false);
+});
+
+it('requires a valid company name when registering a Corporate member', function (mixed $company) {
+    $corporate = MembershipCategory::where('name', 'Corporate')->firstOrFail();
+    $this->actingAs(User::factory()->administrator()->create())
+        ->post(route('members.store'), memberPayload([
+            'membership_category_id' => $corporate->id,
+            'company_name' => $company,
+        ]))->assertSessionHasErrors('company_name');
+
+    expect(Member::count())->toBe(0);
+})->with([null, '', '   ', str_repeat('x', 256), [['invalid']]]);
+
+it('stores and searches Corporate company names and displays them safely', function () {
+    $corporate = MembershipCategory::where('name', 'Corporate')->firstOrFail();
+    $this->actingAs(User::factory()->administrator()->create())
+        ->post(route('members.store'), memberPayload([
+            'membership_category_id' => $corporate->id,
+            'company_name' => '  Harbor Services  ',
+        ]))->assertSessionHasNoErrors()->assertRedirect();
+
+    $member = Member::firstOrFail();
+    expect($member->company_name)->toBe('Harbor Services');
+    $this->get(route('members.index', ['search' => 'Harbor']))->assertOk()->assertSee($member->email);
+    $this->get(route('members.show', $member))->assertOk()->assertSee('Company name')->assertSee('Harbor Services');
+    $this->get(route('members.edit', $member))->assertOk()->assertSee('value="Harbor Services"', false);
+
+    $member->update(['company_name' => '<script>alert(1)</script>']);
+    $this->get(route('members.show', $member))->assertOk()
+        ->assertSee('&lt;script&gt;', false)->assertDontSee('<script>alert(1)</script>', false);
+});
+
+it('requires company details when changing a member to Corporate', function () {
+    $member = Member::factory()->create();
+    $corporate = MembershipCategory::where('name', 'Corporate')->firstOrFail();
+    $this->actingAs(User::factory()->administrator()->create())
+        ->put(route('members.update', $member), memberPayload(['membership_category_id' => $corporate->id]))
+        ->assertSessionHasErrors('company_name');
+
+    $this->put(route('members.update', $member), memberPayload([
+        'membership_category_id' => $corporate->id,
+        'company_name' => 'Harbor Services',
+    ]))->assertSessionHasNoErrors();
+    expect($member->fresh()->company_name)->toBe('Harbor Services');
+});
+
+it('clears company details when changing away from Corporate', function () {
+    $member = Member::factory()->create([
+        'membership_category_id' => MembershipCategory::where('name', 'Corporate')->firstOrFail()->id,
+        'company_name' => 'Former Company',
+    ]);
+    $this->actingAs(User::factory()->administrator()->create())
+        ->put(route('members.update', $member), memberPayload(['company_name' => 'Stale input']))
+        ->assertSessionHasNoErrors();
+
+    expect($member->fresh()->company_name)->toBeNull();
+    $this->get(route('members.show', $member))->assertOk()->assertDontSee('Company name');
+});
+
+it('ignores company input for non-Corporate registrations', function () {
+    $this->actingAs(User::factory()->administrator()->create())
+        ->post(route('members.store'), memberPayload(['company_name' => 'Not applicable']))
+        ->assertSessionHasNoErrors();
+    expect(Member::firstOrFail()->company_name)->toBeNull();
+});
+
 it('offers registration for an empty directory and clearing for unmatched filters', function () {
     $this->actingAs(User::factory()->administrator()->create())
         ->get(route('members.index'))->assertOk()

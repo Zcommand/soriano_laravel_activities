@@ -19,10 +19,14 @@
             <div><dt>Phone</dt><dd>{{ $member->phone ?: 'Not provided' }}</dd></div>
             <div class="full-width"><dt>Address</dt><dd class="address">{{ $member->address ?: 'Not provided' }}</dd></div>
             <div><dt>Category</dt><dd>{{ $member->category->name }}</dd></div>
+            @if($member->category->name === 'Corporate')
+                <div><dt>Company name</dt><dd>{{ $member->company_name ?: 'Not provided' }}</dd></div>
+            @endif
             <div><dt>Level</dt><dd><span class="level-badge level-{{ match ($member->level->name) { 'Silver' => 'silver', 'Gold' => 'gold', 'Platinum' => 'platinum', default => 'basic' } }}">{{ $member->level->name }}</span></dd></div>
             <div><dt>Membership fee <span class="muted">(current rate)</span></dt><dd class="fee-value">&#8369;{{ number_format($member->level->fee, 2) }}</dd></div>
             <div><dt>Account status</dt><dd><span class="status {{ $member->is_active ? 'active' : 'inactive' }}">{{ $member->is_active ? 'Active' : 'Inactive' }}</span></dd></div>
             <div><dt>Registered</dt><dd>{{ $member->created_at->format('M j, Y') }}</dd></div>
+            <div><dt>Last updated</dt><dd>{{ $member->updated_at->format('M j, Y') }}</dd></div>
         </dl>
     </section>
     <section class="account-actions" aria-label="Membership status">

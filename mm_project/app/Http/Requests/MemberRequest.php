@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\Member;
+use App\Models\MembershipCategory;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -17,6 +18,12 @@ class MemberRequest extends FormRequest
     {
         if (is_string($this->input('email'))) {
             $this->merge(['email' => mb_strtolower(trim($this->input('email')))]);
+        }
+
+        if (! $this->isCorporateCategory()) {
+            $this->merge(['company_name' => null]);
+        } elseif (is_string($this->input('company_name'))) {
+            $this->merge(['company_name' => trim($this->input('company_name'))]);
         }
     }
 
@@ -35,6 +42,7 @@ class MemberRequest extends FormRequest
             'email' => ['required', 'email', 'max:255', $uniqueEmail],
             'phone' => ['nullable', 'string', 'max:30'],
             'address' => ['nullable', 'string', 'max:1000'],
+            'company_name' => [Rule::requiredIf($this->isCorporateCategory()), 'nullable', 'string', 'max:255'],
             'membership_category_id' => ['required', 'integer', 'exists:membership_categories,id'],
             'membership_level_id' => ['required', 'integer', 'exists:membership_levels,id'],
         ];
@@ -46,5 +54,12 @@ class MemberRequest extends FormRequest
             'membership_category_id' => 'category',
             'membership_level_id' => 'level',
         ];
+    }
+
+    private function isCorporateCategory(): bool
+    {
+        $categoryId = filter_var($this->input('membership_category_id'), FILTER_VALIDATE_INT);
+
+        return $categoryId !== false && MembershipCategory::whereKey($categoryId)->where('name', 'Corporate')->exists();
     }
 }

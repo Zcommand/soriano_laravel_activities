@@ -2,7 +2,11 @@
 @section('title', 'Staff Login')
 @section('page-class', 'login-page')
 @section('content')
-    <span class="login-mark" aria-hidden="true">MM</span>
+    <div class="login-theme">@include('partials.theme-toggle')</div>
+    <div role="img" aria-label="Membership Management">
+        <img class="login-logo logo-light" src="{{ asset('images/brand/logo-horizontal-light.png') }}" alt="" width="300" height="100">
+        <img class="login-logo logo-dark" src="{{ asset('images/brand/logo-horizontal-light.png') }}" alt="" width="300" height="100">
+    </div>
     <h1>Staff Login</h1>
     <form action="{{ route('login.store') }}" method="POST" class="login-form">
         @csrf

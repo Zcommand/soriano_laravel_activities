@@ -10,7 +10,7 @@
     @if($errors->any())
         <div class="error-summary" role="alert">
             <strong>Member details could not be saved.</strong>
-            <ul>@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>
+            <ul>@foreach($errors->messages() as $field => $messages)<li><a href="#{{ $field }}">{{ $messages[0] }}</a></li>@endforeach</ul>
         </div>
     @endif
 
@@ -29,7 +29,7 @@
                     ['phone', 'Phone (optional)', 'tel', 30, 'tel', false],
                 ] as [$name, $label, $type, $max, $autocomplete, $required])
                     <div class="field">
-                        <label for="{{ $name }}">{{ $label }}</label>
+                        <label for="{{ $name }}">{{ $label }} @if($required)<span class="required-mark" aria-hidden="true">*</span><span class="sr-only"> (required)</span>@endif</label>
                         <input id="{{ $name }}" name="{{ $name }}" type="{{ $type }}" maxlength="{{ $max }}" autocomplete="{{ $autocomplete }}"
                                value="{{ old($name, $member->{$name}) }}" @required($required)
                                @error($name) aria-invalid="true" aria-describedby="{{ $name }}-error" @enderror>
@@ -48,18 +48,18 @@
             <legend>Membership</legend>
             <div class="form-grid">
                 <div class="field">
-                    <label for="membership_category_id">Category</label>
+                    <label for="membership_category_id">Category <span class="required-mark" aria-hidden="true">*</span><span class="sr-only"> (required)</span></label>
                     <select id="membership_category_id" name="membership_category_id" required
                             @error('membership_category_id') aria-invalid="true" aria-describedby="category-error" @enderror>
                         <option value="">Select category</option>
                         @foreach($categories as $category)
-                            <option value="{{ $category->id }}" @selected((string) old('membership_category_id', $member->membership_category_id) === (string) $category->id)>{{ $category->name }}</option>
+                            <option value="{{ $category->id }}" data-corporate="{{ $category->name === 'Corporate' ? 'true' : 'false' }}" @selected((string) old('membership_category_id', $member->membership_category_id) === (string) $category->id)>{{ $category->name }}</option>
                         @endforeach
                     </select>
                     @error('membership_category_id') <p class="error" id="category-error">{{ $message }}</p> @enderror
                 </div>
                 <div class="field">
-                    <label for="membership_level_id">Level and fee (PHP)</label>
+                    <label for="membership_level_id">Level and fee (PHP) <span class="required-mark" aria-hidden="true">*</span><span class="sr-only"> (required)</span></label>
                     <select id="membership_level_id" name="membership_level_id" required
                             @error('membership_level_id') aria-invalid="true" aria-describedby="level-error" @enderror>
                         @foreach($levels as $level)
@@ -67,6 +67,13 @@
                         @endforeach
                     </select>
                     @error('membership_level_id') <p class="error" id="level-error">{{ $message }}</p> @enderror
+                </div>
+                <div class="field full-width" data-company-field>
+                    <label for="company_name">Company name <span class="required-mark" aria-hidden="true">*</span><span class="sr-only"> (required for Corporate members)</span></label>
+                    <input id="company_name" name="company_name" type="text" maxlength="255" autocomplete="organization"
+                           value="{{ old('company_name', $member->company_name) }}"
+                           @error('company_name') aria-invalid="true" aria-describedby="company-error" @enderror>
+                    @error('company_name') <p class="error" id="company-error">{{ $message }}</p> @enderror
                 </div>
             </div>
         </fieldset>
@@ -94,5 +101,5 @@
 @endsection
 
 @push('scripts')
-    <script src="{{ asset('js/member-form.js') }}" defer></script>
+    <script src="{{ asset('js/member-form.js') }}?v=2" defer></script>
 @endpush
