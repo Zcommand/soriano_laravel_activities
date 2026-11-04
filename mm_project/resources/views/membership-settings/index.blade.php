@@ -13,7 +13,7 @@
 @forelse($records as $record)
     <article class="settings-record">
         <div class="settings-record-heading">
-            <h2>{{ $record->name }}</h2>
+            <h2>@if($kind === 'levels')<span class="level-badge level-{{ match ($record->name) { 'Silver' => 'silver', 'Gold' => 'gold', 'Platinum' => 'platinum', default => 'basic' } }}">{{ $record->name }}</span>@else{{ $record->name }}@endif</h2>
             <span class="muted">{{ $record->members_count }} {{ Str::plural('member', $record->members_count) }}</span>
         </div>
         @if($kind === 'levels')
