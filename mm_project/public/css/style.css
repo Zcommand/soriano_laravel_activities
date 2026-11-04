@@ -848,6 +848,38 @@ body.membership-app {
     border-color: var(--control-border);
 }
 
+.membership-app .member-table .row-actions a:first-child {
+    background: #edf4f8;
+    color: #315e79;
+    border-color: #c4d7e3;
+}
+
+.membership-app .member-table .row-actions a:last-child {
+    background: #fff5df;
+    color: #76510e;
+    border-color: #e6d3a4;
+}
+
+html[data-theme="dark"] .membership-app .member-table .row-actions a:first-child {
+    background: #23333e;
+    color: #bad7eb;
+    border-color: #4d6e83;
+}
+
+html[data-theme="dark"] .membership-app .member-table .row-actions a:last-child {
+    background: #393123;
+    color: #efd29a;
+    border-color: #806940;
+}
+
+.membership-app .member-table .row-actions a:hover {
+    filter: brightness(0.94);
+}
+
+html[data-theme="dark"] .membership-app .member-table .row-actions a:hover {
+    filter: brightness(1.15);
+}
+
 .membership-app .field {
     min-width: 0;
     margin: 0;
@@ -1329,7 +1361,6 @@ body.membership-app {
 .membership-app .account-actions {
     max-width: 800px;
     margin-top: 32px;
-    border-top: 1px solid var(--border);
     padding-top: 24px;
 }
 

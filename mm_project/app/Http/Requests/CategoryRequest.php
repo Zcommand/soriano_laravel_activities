@@ -24,6 +24,7 @@ class CategoryRequest extends FormRequest
         $record = $this->route('category');
 
         return [
+            'description' => ['nullable', 'string', 'max:2000'],
             'name' => ['required', 'string', 'max:100', Rule::unique('membership_categories', 'name')->ignore($record), Rule::when($record?->name === 'Corporate', Rule::in(['Corporate']))],
         ];
     }

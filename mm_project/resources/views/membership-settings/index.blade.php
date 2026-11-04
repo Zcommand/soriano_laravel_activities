@@ -16,6 +16,9 @@
             <h2>@if($kind === 'levels')<span class="level-badge level-{{ match ($record->name) { 'Silver' => 'silver', 'Gold' => 'gold', 'Platinum' => 'platinum', default => 'basic' } }}">{{ $record->name }}</span>@else{{ $record->name }}@endif</h2>
             <span class="muted">{{ $record->members_count }} {{ Str::plural('member', $record->members_count) }}</span>
         </div>
+        @if($kind === 'categories' && $record->description)
+            <p class="settings-benefits">{{ $record->description }}</p>
+        @endif
         @if($kind === 'levels')
             <dl class="settings-facts">
                 <div><dt>Fee</dt><dd class="settings-fee">₱{{ number_format($record->fee, 2) }}</dd></div>

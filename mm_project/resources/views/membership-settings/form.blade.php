@@ -17,6 +17,13 @@
         @if($kind === 'categories' && $record->name === 'Corporate')<p class="muted">The Corporate name is retained because it enables the company-name field.</p>@endif
         @error('name')<p class="error" id="name-error">{{ $message }}</p>@enderror
     </div>
+    @if($kind === 'categories')
+    <div class="field">
+        <label for="description">Description (optional)</label>
+        <textarea id="description" name="description" rows="3" maxlength="2000" @error('description') aria-invalid="true" aria-describedby="description-error" @enderror>{{ old('description', $record->description) }}</textarea>
+        @error('description')<p class="error" id="description-error">{{ $message }}</p>@enderror
+    </div>
+    @endif
     @if($kind === 'levels')
     <div class="form-grid">
         <div class="field">

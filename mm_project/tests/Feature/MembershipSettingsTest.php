@@ -8,6 +8,18 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
+it('saves validates and clears optional category descriptions safely', function () {
+    $this->actingAs(User::factory()->administrator()->create());
+    $this->post(route('categories.store'), ['name' => 'Alumni', 'description' => '<b>Former students</b>'])->assertSessionHasNoErrors();
+    $category = MembershipCategory::where('name', 'Alumni')->firstOrFail();
+    expect($category->description)->toBe('<b>Former students</b>');
+    $this->get(route('categories.index'))->assertSee('&lt;b&gt;Former students&lt;/b&gt;', false)->assertDontSee('<b>Former students</b>', false);
+    $this->get(route('categories.edit', $category))->assertSee('Description (optional)');
+    $this->put(route('categories.update', $category), ['name' => 'Alumni', 'description' => str_repeat('a', 2001)])->assertSessionHasErrors('description');
+    $this->put(route('categories.update', $category), ['name' => 'Alumni', 'description' => ''])->assertSessionHasNoErrors();
+    expect($category->fresh()->description)->toBeNull();
+});
+
 it('restricts membership settings to administrators', function (string $kind) {
     $this->get(route($kind.'.index'))->assertRedirect(route('login'));
     $this->actingAs(User::factory()->create())->get(route($kind.'.index'))->assertForbidden();
