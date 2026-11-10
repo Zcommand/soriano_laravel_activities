@@ -20,7 +20,7 @@ class MembershipTransaction extends Model
         'submission_key', 'member_id', 'membership_level_id', 'membership_category_id',
         'created_by', 'approved_by', 'type', 'status', 'member_name', 'membership_number',
         'level_name', 'category_name', 'fee', 'validity_days', 'benefits', 'notes',
-        'cancellation_reason', 'approved_at', 'starts_at', 'expires_at',
+        'previous_membership_level_id', 'cancellation_reason', 'approved_at', 'starts_at', 'expires_at',
     ];
 
     protected static function booted(): void
@@ -64,6 +64,11 @@ class MembershipTransaction extends Model
         return $this->belongsTo(User::class, 'approved_by');
     }
 
+    public function approvalReversals(): HasMany
+    {
+        return $this->hasMany(MembershipApprovalReversal::class);
+    }
+
     public function payments(): HasMany
     {
         return $this->hasMany(Payment::class);
@@ -78,7 +83,7 @@ class MembershipTransaction extends Model
 
     public function paidMinorUnits(): int
     {
-        return $this->payments->sum(fn (Payment $payment): int => self::minorUnits($payment->amount));
+        return $this->payments->whereNull('voided_at')->sum(fn (Payment $payment): int => self::minorUnits($payment->amount));
     }
 
     public function balanceMinorUnits(): int

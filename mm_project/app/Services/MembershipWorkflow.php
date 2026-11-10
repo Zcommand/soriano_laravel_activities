@@ -7,6 +7,7 @@ use App\Models\MembershipLevel;
 use App\Models\MembershipTransaction;
 use App\Models\Payment;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
@@ -84,6 +85,25 @@ class MembershipWorkflow
         }, 3);
     }
 
+    public function voidPayment(Payment $payment, string $reason, User $staff): void
+    {
+        DB::transaction(function () use ($payment, $reason, $staff): void {
+            $original = $payment->transaction;
+            Member::lockForUpdate()->findOrFail($original->member_id);
+            $transaction = MembershipTransaction::lockForUpdate()->findOrFail($original->id);
+            $payment = Payment::lockForUpdate()->findOrFail($payment->id);
+            if ($payment->voided_at) {
+                throw ValidationException::withMessages(['void_reason' => 'This payment is already voided. Its original audit record is preserved.']);
+            }
+            if (! in_array($transaction->status, ['Pending', 'Paid'], true)) {
+                throw ValidationException::withMessages(['void_reason' => 'Only payments on Pending or Paid transactions can be voided. Approved memberships require a separate membership reversal.']);
+            }
+            $payment->forceFill(['voided_at' => now(), 'voided_by' => $staff->id, 'void_reason' => $reason])->save();
+            $transaction->load('payments');
+            $transaction->update(['status' => $transaction->balanceMinorUnits() === 0 ? 'Paid' : 'Pending']);
+        }, 3);
+    }
+
     public function approve(MembershipTransaction $transaction, User $staff): void
     {
         DB::transaction(function () use ($transaction, $staff): void {
@@ -108,10 +128,48 @@ class MembershipWorkflow
                 }
             }
             $transaction->update([
+                'previous_membership_level_id' => $member->membership_level_id,
                 'status' => 'Approved', 'approved_by' => $staff->id, 'approved_at' => now(),
                 'validity_days' => $days, 'starts_at' => $start, 'expires_at' => $start->addDays($days),
             ]);
             $member->update(['membership_level_id' => $transaction->membership_level_id]);
+        }, 3);
+    }
+
+    public function reverseApproval(MembershipTransaction $transaction, string $reason, User $staff): void
+    {
+        DB::transaction(function () use ($transaction, $reason, $staff): void {
+            $member = Member::lockForUpdate()->findOrFail($transaction->member_id);
+            $transaction = MembershipTransaction::lockForUpdate()->findOrFail($transaction->id);
+            if (! in_array($transaction->status, ['Approved', 'Expired'], true)) {
+                throw ValidationException::withMessages(['reversal_reason' => 'Only Approved or Expired memberships can have their approval reversed.']);
+            }
+            $otherTransactions = $member->transactions()->where('id', '!=', $transaction->id);
+            if ((clone $otherTransactions)->whereIn('status', ['Pending', 'Paid'])->exists()) {
+                throw ValidationException::withMessages(['reversal_reason' => 'Resolve the other open transaction first: void its payments and cancel it, or complete its correction.']);
+            }
+            if ((clone $otherTransactions)->whereIn('status', ['Approved', 'Expired'])
+                ->where(function (Builder $query) use ($transaction): void {
+                    $query->where('expires_at', '>', $transaction->expires_at)
+                        ->orWhere(function (Builder $query) use ($transaction): void {
+                            $query->where('expires_at', $transaction->expires_at)->where('id', '>', $transaction->id);
+                        });
+                })->exists()) {
+                throw ValidationException::withMessages(['reversal_reason' => 'Reverse the later membership or renewal first. This approval supports its validity dates.']);
+            }
+            $transaction->approvalReversals()->create([
+                'reversed_by' => $staff->id, 'reason' => $reason,
+                'previous_status' => $transaction->displayStatus(),
+                'approved_by' => $transaction->approved_by, 'approved_at' => $transaction->approved_at,
+                'starts_at' => $transaction->starts_at, 'expires_at' => $transaction->expires_at,
+            ]);
+            $transaction->load('payments');
+            $transaction->update([
+                'status' => $transaction->balanceMinorUnits() === 0 ? 'Paid' : 'Pending',
+                'approved_by' => null, 'approved_at' => null, 'starts_at' => null, 'expires_at' => null,
+            ]);
+            $previous = $member->transactions()->whereIn('status', ['Approved', 'Expired'])->orderByDesc('expires_at')->orderByDesc('id')->first();
+            $member->update(['membership_level_id' => $previous?->membership_level_id ?? $transaction->previous_membership_level_id ?? $transaction->membership_level_id]);
         }, 3);
     }
 
@@ -120,7 +178,7 @@ class MembershipWorkflow
         DB::transaction(function () use ($transaction, $reason): void {
             Member::lockForUpdate()->findOrFail($transaction->member_id);
             $transaction = MembershipTransaction::lockForUpdate()->findOrFail($transaction->id);
-            if ($transaction->status !== 'Pending' || $transaction->payments()->exists()) {
+            if ($transaction->status !== 'Pending' || $transaction->payments()->whereNull('voided_at')->exists()) {
                 throw ValidationException::withMessages(['cancellation_reason' => 'Only unpaid Pending transactions can be cancelled. Payment records are preserved.']);
             }
             $transaction->update(['status' => 'Cancelled', 'cancellation_reason' => $reason]);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ReverseApprovalRequest;
 use App\Http\Requests\TransactionRequest;
 use App\Models\Member;
 use App\Models\MembershipLevel;
@@ -52,7 +53,7 @@ class TransactionController extends Controller
     {
         MembershipTransaction::expireDue();
 
-        return view('transactions.show', ['transaction' => $transaction->refresh()->load(['member', 'payments.recorder', 'creator', 'approver'])]);
+        return view('transactions.show', ['transaction' => $transaction->refresh()->load(['member', 'payments.recorder', 'creator', 'approver', 'approvalReversals.reverser', 'approvalReversals.approver'])]);
     }
 
     public function approve(Request $request, MembershipTransaction $transaction, MembershipWorkflow $workflow): RedirectResponse
@@ -60,6 +61,13 @@ class TransactionController extends Controller
         $workflow->approve($transaction, $request->user());
 
         return redirect()->route('transactions.show', $transaction)->with('success', 'Membership approved. Its validity dates have been recorded.');
+    }
+
+    public function reverseApproval(ReverseApprovalRequest $request, MembershipTransaction $transaction, MembershipWorkflow $workflow): RedirectResponse
+    {
+        $workflow->reverseApproval($transaction, $request->validated('reversal_reason'), $request->user());
+
+        return redirect()->route('transactions.show', $transaction)->with('success', 'Approval reversed. Membership validity was removed and the approval history was preserved. Payments remain recorded; open a receipt to void a mistaken payment.');
     }
 
     public function cancel(Request $request, MembershipTransaction $transaction, MembershipWorkflow $workflow): RedirectResponse

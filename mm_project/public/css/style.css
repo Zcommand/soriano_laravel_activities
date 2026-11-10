@@ -1970,3 +1970,9 @@ html[data-theme="dark"] .membership-app .status-expired, html[data-theme="dark"]
     .membership-app .status { background: none !important; color: #111 !important; border: 1px solid #999; }
     .membership-app .level-badge { background: none !important; color: #111 !important; border: 1px solid #999; }
 }
+
+.membership-app .void-audit { padding: 18px; margin-bottom: 24px; border: 2px solid var(--error); border-radius: 6px; }
+.membership-app .void-audit h2 { color: var(--error); margin-bottom: 8px; }
+.membership-app .void-audit p + p { margin-top: 8px; }
+.membership-app .payment-row > div > strong { display: block; font-variant-numeric: tabular-nums; }
+@media print { .membership-app .void-audit { border-color: #111; break-inside: avoid; } .membership-app .void-audit h2 { color: #111; } }

@@ -30,12 +30,17 @@ class Payment extends Model
 
     protected function casts(): array
     {
-        return ['amount' => 'decimal:2', 'paid_on' => 'immutable_date'];
+        return ['amount' => 'decimal:2', 'paid_on' => 'immutable_date', 'voided_at' => 'immutable_datetime'];
     }
 
     public function transaction(): BelongsTo
     {
         return $this->belongsTo(MembershipTransaction::class, 'membership_transaction_id');
+    }
+
+    public function voider(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'voided_by');
     }
 
     public function recorder(): BelongsTo

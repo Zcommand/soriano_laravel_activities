@@ -33,11 +33,38 @@
 @if($transaction->status === 'Paid' && $transaction->member->is_active)
     <form method="POST" action="{{ route('transactions.approve', $transaction) }}">@csrf<button class="button" type="submit">Approve Membership</button></form>
 @endif
-@if($transaction->status === 'Pending' && $transaction->payments->isEmpty())
+@if($transaction->status === 'Pending' && $transaction->payments->whereNull('voided_at')->isEmpty())
     <details class="workflow-cancel"><summary>Cancel transaction</summary><form method="POST" action="{{ route('transactions.cancel', $transaction) }}" class="settings-form">@csrf<label for="cancellation_reason">Reason (required)</label><textarea id="cancellation_reason" name="cancellation_reason" required maxlength="1000">{{ old('cancellation_reason') }}</textarea><button class="button danger-button" type="submit">Confirm Cancellation</button></form></details>
 @endif
 </div>
+@if(in_array($transaction->status, ['Approved', 'Expired'], true))
+<section id="reverse-approval" class="account-actions print-hidden" aria-label="Approval correction">
+    <details @if($errors->has('reversal_reason')) open @endif>
+        <summary>Reverse approval</summary>
+        <p>This removes the membership validity granted by this transaction. Payments stay recorded until separately voided. Later dependent renewals must be corrected first.</p>
+        <form class="settings-form" method="POST" action="{{ route('transactions.reverse-approval', $transaction) }}">
+            @csrf
+            <label for="reversal_reason">Reason for reversal (required)</label>
+            <textarea id="reversal_reason" name="reversal_reason" required minlength="5" maxlength="1000">{{ old('reversal_reason') }}</textarea>
+            <button class="button danger-button" type="submit">Confirm Reverse Approval</button>
+        </form>
+    </details>
+</section>
+@endif
+@if($transaction->approvalReversals->isNotEmpty())
+<section class="workflow-section" aria-labelledby="approval-audit-heading">
+    <h2 id="approval-audit-heading">Approval reversal history</h2>
+    @foreach($transaction->approvalReversals as $reversal)
+    <article class="void-audit">
+        <h3>Approval reversed · {{ $reversal->created_at->format('M j, Y H:i') }}</h3>
+        <p>Reversed by {{ $reversal->reverser->name }}: {{ $reversal->reason }}</p>
+        <p>Original approval: {{ $reversal->approver?->name ?? 'Not recorded' }} · {{ $reversal->approved_at?->format('M j, Y H:i') ?? 'Not recorded' }}</p>
+        <p>Removed validity: {{ $reversal->starts_at?->format('M j, Y H:i') ?? 'Not recorded' }} to {{ $reversal->expires_at?->format('M j, Y H:i') ?? 'Not recorded' }} · {{ $reversal->previous_status }}</p>
+    </article>
+    @endforeach
+</section>
+@endif
 <section class="workflow-section"><h2>Payment history</h2>
-<ul class="ledger-list">@forelse($transaction->payments as $payment)<li class="payment-row"><div><a href="{{ route('payments.show', $payment) }}">{{ $payment->reference }}</a><p class="muted">{{ $payment->paid_on->format('M j, Y') }} · {{ $payment->method }}</p></div><strong>₱{{ number_format($payment->amount, 2) }}</strong><a class="button secondary-button print-hidden" href="{{ route('payments.show', $payment) }}">Receipt</a></li>@empty<li class="empty-message">No payments recorded. @if((float) $transaction->fee === 0.0)This level has no fee.@endif</li>@endforelse</ul>
+<ul class="ledger-list">@forelse($transaction->payments as $payment)<li class="payment-row"><div><a href="{{ route('payments.show', $payment) }}">{{ $payment->reference }}</a><p class="muted">{{ $payment->paid_on->format('M j, Y') }} · {{ $payment->method }}</p></div><div>@if($payment->voided_at)<span class="status status-cancelled">Voided</span>@endif<strong>₱{{ number_format($payment->amount, 2) }}</strong></div><a class="button secondary-button print-hidden" href="{{ route('payments.show', $payment) }}">Receipt</a></li>@empty<li class="empty-message">No payments recorded. @if((float) $transaction->fee === 0.0)This level has no fee.@endif</li>@endforelse</ul>
 </section>
 @endsection
