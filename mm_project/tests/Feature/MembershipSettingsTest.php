@@ -54,7 +54,7 @@ it('rejects duplicate categories and retains the corporate company rule', functi
 
 it('manages level fees validity and benefits without changing member assignment', function () {
     $this->actingAs(User::factory()->administrator()->create());
-    $this->get(route('levels.index'))->assertOk()->assertSee('₱200.00')->assertSee('Not configured');
+    $this->get(route('levels.index'))->assertOk()->assertSee('₱200.00')->assertSee('365 days');
     $this->get(route('levels.create'))->assertOk();
     $data = ['name' => 'Executive', 'fee' => '1500.50', 'validity_days' => 365, 'benefits' => 'Priority assistance'];
     $this->post(route('levels.store'), $data)->assertRedirect(route('levels.index'));

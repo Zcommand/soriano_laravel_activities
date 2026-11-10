@@ -12,6 +12,11 @@
         </div>
         <a class="button" href="{{ route('members.edit', $member) }}">Edit Member</a>
     </header>
+    <div class="form-actions print-hidden">
+        <a class="button secondary-button" href="{{ route('members.history', $member) }}">Transaction History</a>
+        @if($member->is_active)<a class="button secondary-button" href="{{ route('transactions.create', ['member_id' => $member->id]) }}">New Transaction</a>@endif
+        <button class="button secondary-button" type="button" data-print>Print Member Record</button>
+    </div>
     <section class="profile" aria-labelledby="profile-heading">
         <h2 id="profile-heading">Member Details</h2>
         <dl class="profile-grid">

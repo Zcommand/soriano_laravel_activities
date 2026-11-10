@@ -1888,3 +1888,85 @@ html[data-theme="dark"] .membership-app .error-summary {
     .membership-app .settings-record { padding: 18px; }
     .membership-app .settings-record-heading { flex-wrap: wrap; gap: 6px; }
 }
+
+/* Membership transaction workspace */
+.membership-app .membership-context {
+    padding: 18px;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--orange);
+    border-radius: 6px;
+    background: var(--soft-surface);
+}
+
+.membership-app .membership-context-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    margin: 16px 0;
+}
+
+.membership-app .membership-context-grid > div {
+    min-width: 0;
+}
+
+@media (max-width: 420px) {
+    .membership-app .membership-context-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+.membership-app .workflow-section { margin-top: 28px; }
+.membership-app .workflow-section h3 { margin-top: 18px; }
+.membership-app .workflow-actions { display: flex; align-items: start; flex-wrap: wrap; gap: 18px; margin: 24px 0; }
+.membership-app .workflow-actions form { margin: 0; }
+.membership-app .workflow-cancel { min-width: min(100%, 280px); }
+.membership-app .workflow-cancel summary { min-height: 44px; padding: 10px 0; }
+.membership-app .ledger-list { list-style: none; padding: 0; margin: 18px 0; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; }
+.membership-app .ledger-row { display: grid; grid-template-columns: minmax(140px, 1fr) minmax(160px, 1.4fr) minmax(90px, .7fr) 100px 64px; gap: 16px; align-items: center; padding: 20px; }
+.membership-app .ledger-row + .ledger-row, .membership-app .payment-row + .payment-row { border-top: 1px solid var(--border); }
+.membership-app .ledger-row > *, .membership-app .payment-row > * { min-width: 0; overflow-wrap: anywhere; }
+.membership-app .ledger-row p, .membership-app .payment-row p { margin-top: 4px; }
+.membership-app .ledger-reference { font-weight: 650; color: var(--ink); }
+.membership-app .payment-row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 20px; padding: 20px; align-items: center; }
+.membership-app .ledger-filters { display: grid; grid-template-columns: minmax(0, 2fr) minmax(140px, 1fr) auto auto; gap: 12px; align-items: end; margin: 24px 0; }
+.membership-app .dashboard-summary { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-bottom: 20px; }
+.membership-app .dashboard-summary > a { display: grid; gap: 14px; padding: 22px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--ink); text-decoration: none; }
+.membership-app .dashboard-summary strong { font-size: clamp(22px, 2.5vw, 30px); overflow-wrap: anywhere; }
+.membership-app .dashboard-summary span { color: var(--muted); }
+.membership-app .dashboard-summary > a:first-child { background: var(--nav-active); color: var(--nav-text); }
+.membership-app .dashboard-summary > a:first-child span { color: inherit; }
+.membership-app .dashboard-summary > a:hover { border-color: var(--focus); }
+.membership-app .status-pending { background: #fff1cd; color: #775510; }
+.membership-app .status-paid { background: #e5edf8; color: #315d8b; }
+.membership-app .status-approved { background: #dff5e8; color: #216b43; }
+.membership-app .status-expired, .membership-app .status-cancelled { background: #ececea; color: #5b6059; }
+html[data-theme="dark"] .membership-app .status-pending { background: #413521; color: #e7c880; }
+html[data-theme="dark"] .membership-app .status-paid { background: #29394d; color: #b8d2ef; }
+html[data-theme="dark"] .membership-app .status-approved { background: #253c2e; color: #b2d5be; }
+html[data-theme="dark"] .membership-app .status-expired, html[data-theme="dark"] .membership-app .status-cancelled { background: #383838; color: #cecece; }
+.membership-app .receipt { max-width: 1000px; }
+@media (max-width: 1200px) {
+    .membership-app .ledger-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; }
+    .membership-app .ledger-row > :nth-child(2) { grid-column: span 2; }
+    .membership-app .dashboard-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 600px) {
+    .membership-app .ledger-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); padding: 16px; }
+    .membership-app .ledger-row > :first-child, .membership-app .ledger-row > :nth-child(2) { grid-column: 1 / -1; }
+    .membership-app .ledger-row > a:last-child { grid-column: 1 / -1; }
+    .membership-app .ledger-filters { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+    .membership-app .ledger-filters .field { grid-column: 1 / -1; }
+    .membership-app .payment-row { grid-template-columns: minmax(0, 1fr) auto; padding: 16px; gap: 12px; }
+    .membership-app .payment-row > :first-child { grid-column: 1 / -1; }
+    .membership-app .dashboard-summary > a { padding: 16px; }
+}
+@media print {
+    html[data-theme] body.membership-app, body.membership-app { --background: #fff; --ink: #111; --muted: #444; --border: #bbb; --surface: #fff; background: #fff; color: #111; font-size: 11pt; }
+    .membership-app .workspace-sidebar, .membership-app .skip-link, .membership-app .print-hidden, .membership-app .account-actions, .membership-app .notice { display: none !important; }
+    .membership-app.workspace-page .page { margin: 0; max-width: none; padding: 0; }
+    .membership-app .profile-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .membership-app a { color: #111; text-decoration: none; }
+    .membership-app .receipt, .membership-app .profile { max-width: none; }
+    .membership-app .profile-grid > div, .membership-app .payment-row { break-inside: avoid; }
+    .membership-app .status { background: none !important; color: #111 !important; border: 1px solid #999; }
+    .membership-app .level-badge { background: none !important; color: #111 !important; border: 1px solid #999; }
+}

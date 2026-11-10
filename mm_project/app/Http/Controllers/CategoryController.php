@@ -14,7 +14,7 @@ class CategoryController extends Controller
     {
         return view('membership-settings.index', [
             'kind' => 'categories', 'label' => 'Category',
-            'records' => MembershipCategory::withCount('members')->orderBy('id')->paginate(12),
+            'records' => MembershipCategory::withCount(['members', 'transactions'])->orderBy('id')->paginate(12),
         ]);
     }
 
@@ -44,8 +44,8 @@ class CategoryController extends Controller
 
     public function destroy(MembershipCategory $category): RedirectResponse
     {
-        if ($category->members()->exists()) {
-            return back()->withErrors(['delete' => 'This category is assigned to members. Reassign them before deleting it.']);
+        if ($category->members()->exists() || $category->transactions()->exists()) {
+            return back()->withErrors(['delete' => 'This category is used by members or transaction history and cannot be deleted.']);
         }
 
         try {

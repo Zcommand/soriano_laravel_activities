@@ -6,7 +6,7 @@
     <title>@yield('title', 'Members') | Membership Management</title>
     <link rel="icon" type="image/png" href="{{ asset('images/brand/logo-symbol.png') }}">
     <script src="{{ asset('js/theme.js') }}"></script>
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}?v=members-19">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}?v=members-21">
 </head>
 <body class="membership-app {{ request()->routeIs('login', 'login.store') ? '' : 'workspace-page' }}">
     <svg class="brand-filters" width="0" height="0" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
@@ -27,9 +27,12 @@
             <div class="workspace-menu-body" id="workspace-navigation">
             <nav aria-label="Main navigation">
                 @auth
+                    <a href="{{ route('dashboard') }}" @if(request()->routeIs('dashboard')) aria-current="page" @endif><span>Dashboard</span><span class="nav-arrow" aria-hidden="true">&rarr;</span></a>
                     <a href="{{ route('members.index') }}" @if(request()->routeIs('members.*')) aria-current="page" @endif><span>Members</span><span class="nav-arrow" aria-hidden="true">&rarr;</span></a>
                     <a href="{{ route('categories.index') }}" @if(request()->routeIs('categories.*')) aria-current="page" @endif><span>Categories</span><span class="nav-arrow" aria-hidden="true">&rarr;</span></a>
                     <a href="{{ route('levels.index') }}" @if(request()->routeIs('levels.*')) aria-current="page" @endif><span>Levels</span><span class="nav-arrow" aria-hidden="true">&rarr;</span></a>
+                    <a href="{{ route('transactions.index') }}" @if(request()->routeIs('transactions.*')) aria-current="page" @endif><span>Transactions</span><span class="nav-arrow" aria-hidden="true">&rarr;</span></a>
+                    <a href="{{ route('payments.index') }}" @if(request()->routeIs('payments.*')) aria-current="page" @endif><span>Payments</span><span class="nav-arrow" aria-hidden="true">&rarr;</span></a>
                 @else
                     <a href="{{ route('login') }}">Staff Login</a>
                 @endauth
@@ -57,6 +60,7 @@
         @yield('content')
     </main>
     @stack('scripts')
+    <script src="{{ asset('js/print.js') }}" defer></script>
     @unless(request()->routeIs('login', 'login.store'))
         <script src="{{ asset('js/workspace.js') }}?v=2" defer></script>
     @endunless

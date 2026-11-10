@@ -8,7 +8,7 @@
 @if($errors->any())
     <div class="error-summary" role="alert">@foreach($errors->all() as $message)<p>{{ $message }}</p>@endforeach</div>
 @endif
-<p class="settings-note">Changes appear in member forms. Records assigned to members are protected from deletion.</p>
+<p class="settings-note">Changes appear in member forms. Records used by members or transaction history are protected from deletion.</p>
 <div class="settings-list">
 @forelse($records as $record)
     <article class="settings-record">
@@ -28,7 +28,7 @@
         @endif
         <div class="settings-actions">
             <a class="button secondary-button" href="{{ route($kind.'.edit', $record) }}" aria-label="Edit {{ $record->name }}">Edit</a>
-            @if($record->members_count)
+            @if($record->members_count || $record->transactions_count)
                 <span class="muted">In use · deletion protected</span>
             @else
                 <details class="settings-delete">

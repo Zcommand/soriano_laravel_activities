@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Database\Factories\MemberFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Str;
 
 class Member extends Model
@@ -39,6 +42,19 @@ class Member extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(MembershipCategory::class, 'membership_category_id');
+    }
+
+    public function transactions(): HasMany
+    {
+        return $this->hasMany(MembershipTransaction::class);
+    }
+
+    public function currentMembership(): HasOne
+    {
+        return $this->hasOne(MembershipTransaction::class)->ofMany(
+            ['expires_at' => 'max', 'id' => 'max'],
+            fn (Builder $query) => $query->whereIn('status', ['Approved', 'Expired'])->where('starts_at', '<=', now()),
+        );
     }
 
     public function level(): BelongsTo

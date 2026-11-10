@@ -14,7 +14,7 @@ class LevelController extends Controller
     {
         return view('membership-settings.index', [
             'kind' => 'levels', 'label' => 'Level',
-            'records' => MembershipLevel::withCount('members')->orderBy('id')->paginate(12),
+            'records' => MembershipLevel::withCount(['members', 'transactions'])->orderBy('id')->paginate(12),
         ]);
     }
 
@@ -44,8 +44,8 @@ class LevelController extends Controller
 
     public function destroy(MembershipLevel $level): RedirectResponse
     {
-        if ($level->members()->exists()) {
-            return back()->withErrors(['delete' => 'This level is assigned to members. Reassign them before deleting it.']);
+        if ($level->members()->exists() || $level->transactions()->exists()) {
+            return back()->withErrors(['delete' => 'This level is used by members or transaction history and cannot be deleted.']);
         }
 
         try {
