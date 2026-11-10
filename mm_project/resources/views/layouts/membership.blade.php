@@ -7,8 +7,9 @@
     <link rel="icon" type="image/png" href="{{ asset('images/brand/logo-symbol.png') }}">
     <script src="{{ asset('js/theme.js') }}"></script>
     <link rel="stylesheet" href="{{ asset('css/style.css') }}?v=members-21">
+    <link rel="stylesheet" href="{{ asset('css/desk.css') }}?v=1">
 </head>
-<body class="membership-app {{ request()->routeIs('login', 'login.store') ? '' : 'workspace-page' }}">
+<body class="membership-app {{ request()->routeIs('login', 'login.store') ? '' : 'workspace-page desk-shell' }}">
     <svg class="brand-filters" width="0" height="0" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
         <defs>
             <filter id="brand-dark-ink" color-interpolation-filters="sRGB">

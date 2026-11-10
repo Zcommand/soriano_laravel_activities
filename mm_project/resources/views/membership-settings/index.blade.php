@@ -9,7 +9,7 @@
     <div class="error-summary" role="alert">@foreach($errors->all() as $message)<p>{{ $message }}</p>@endforeach</div>
 @endif
 <p class="settings-note">Changes appear in member forms. Records used by members or transaction history are protected from deletion.</p>
-<div class="settings-list">
+<div class="settings-list settings-list-{{ $kind }}">
 @forelse($records as $record)
     <article class="settings-record">
         <div class="settings-record-heading">

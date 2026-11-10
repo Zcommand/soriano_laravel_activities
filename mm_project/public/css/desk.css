@@ -1,0 +1,172 @@
+/* Membership Desk: a separate presentation layer for the review branch. */
+body.desk-shell {
+    --background: #f7f6f2;
+    --soft-surface: #efeee8;
+    --border: #ddddd4;
+    --ink: #252b26;
+    --muted: #62685f;
+    --surface-hover: #f5f4ee;
+}
+html[data-theme="dark"] body.desk-shell {
+    --background: #1a1b19;
+    --soft-surface: #22231f;
+    --surface: #262723;
+    --surface-hover: #30312c;
+    --border: #41433b;
+    --ink: #ecece5;
+    --muted: #bbbcaf;
+}
+.desk-shell .workspace-sidebar {
+    background: var(--background);
+    padding: 24px 18px 16px;
+    gap: 30px;
+}
+.desk-shell .workspace-sidebar nav { gap: 4px; }
+.desk-shell .workspace-sidebar nav a { min-height: 44px; padding: 10px 14px; }
+.desk-shell .workspace-sidebar nav [aria-current] {
+    background: var(--soft-surface);
+    color: var(--ink);
+}
+.desk-shell .nav-arrow { display: none; }
+.desk-shell .workspace-sidebar nav [aria-current] .nav-arrow {
+    display: inline;
+    color: var(--ink);
+}
+.desk-shell .page { padding: 30px 36px 48px; }
+.desk-shell h1 { font-size: clamp(24px, 2.5vw, 30px); letter-spacing: -.035em; }
+.desk-shell h2 { font-size: 16px; letter-spacing: -.015em; }
+.desk-shell .page-heading { margin-bottom: 24px; gap: 20px; }
+.desk-shell .desk-eyebrow { color: var(--muted); font-size: 11px; font-weight: 650; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 6px; }
+.desk-shell .desk-heading .muted { margin-top: 6px; }
+.desk-shell .button { border-radius: 5px; white-space: nowrap; }
+.desk-shell .dashboard-summary {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0;
+    padding: 20px 0;
+    border-block: 1px solid var(--border);
+    margin-bottom: 28px;
+}
+.desk-shell .dashboard-summary > a,
+.desk-shell .dashboard-summary > a:first-child {
+    padding: 0 20px;
+    border: 0;
+    border-left: 1px solid var(--border);
+    border-radius: 0;
+    background: transparent;
+    color: var(--ink);
+    gap: 6px;
+}
+.desk-shell .dashboard-summary > a:first-child { padding-left: 0; border-left: 0; }
+.desk-shell .dashboard-summary > a span,
+.desk-shell .dashboard-summary > a:first-child span { color: var(--muted); font-size: 12px; }
+.desk-shell .dashboard-summary strong { font-size: clamp(22px, 2.2vw, 28px); font-weight: 600; letter-spacing: -.035em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.desk-shell .dashboard-summary > a:hover span { color: var(--ink); text-decoration: underline; }
+.desk-shell .desk-section-heading { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 14px; }
+.desk-shell .desk-section-heading p { font-size: 12px; margin-top: 4px; }
+.desk-shell .desk-section-heading .back-link { margin: 0; font-size: 12px; }
+.desk-shell .desk-attention { border-left: 3px solid var(--orange); padding-left: 20px; }
+.desk-shell .desk-queue { list-style: none; margin: 0; padding: 0; }
+.desk-shell .desk-queue li { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 16px; align-items: center; padding: 14px 0; border-top: 1px solid var(--border); }
+.desk-shell .desk-queue p { font-size: 12px; margin-top: 4px; }
+.desk-shell .desk-queue .desk-clear { display: block; padding: 18px 0; }
+.desk-shell .desk-clear strong { font-weight: 500; }
+.desk-shell .desk-footnote { margin-top: 24px; font-size: 12px; color: var(--muted); }
+.desk-shell .ledger-list { border-radius: 5px; }
+.desk-shell .ledger-row { grid-template-columns: minmax(145px, 1fr) minmax(170px, 1.3fr) minmax(80px, .65fr) 95px auto; padding: 18px; gap: 16px; }
+.desk-shell .ledger-row > :nth-child(2) { grid-column: auto; }
+.desk-shell .ledger-row > a:last-child { min-width: 64px; padding-inline: 14px; overflow-wrap: normal; }
+.desk-shell .ledger-row > div:nth-child(3) { text-align: right; font-variant-numeric: tabular-nums; }
+.desk-shell .member-overview { margin-bottom: 20px; padding-bottom: 18px; }
+.desk-shell .overview-heading { margin-bottom: 12px; }
+.desk-shell .member-summary { gap: 0; border-block: 1px solid var(--border); padding: 14px 0; }
+.desk-shell .member-summary > div,
+.desk-shell .member-summary .summary-total,
+.desk-shell .member-summary .summary-active {
+    padding: 0 20px;
+    background: transparent;
+    color: var(--ink);
+    border: 0;
+    border-left: 1px solid var(--border);
+    border-radius: 0;
+}
+html[data-theme="dark"] .desk-shell .member-summary .summary-total { background: transparent; border-color: transparent; }
+.desk-shell .member-summary > div:first-child { padding-left: 0; border-left: 0; }
+.desk-shell .member-summary dt,
+.desk-shell .summary-total dt { color: var(--muted); font-size: 12px; margin-bottom: 4px; }
+.desk-shell .member-summary dd { font-size: 25px; font-weight: 600; }
+.desk-shell .level-breakdown { margin-top: 8px; }
+.desk-shell .level-breakdown > summary { padding: 8px 0; font-size: 12px; }
+.desk-shell .level-summary { gap: 10px; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+.desk-shell .level-summary > div { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 0; border: 0; }
+.desk-shell .level-summary dd { font-size: 17px; }
+.desk-shell .level-summary dd span { font-size: 11px; }
+.desk-shell .level-badge { white-space: nowrap; }
+.desk-shell .settings-note { font-size: 12px; margin-bottom: 20px; }
+.desk-shell .settings-list { gap: 14px; }
+.desk-shell .settings-record { padding: 20px; border-radius: 5px; gap: 16px; }
+.desk-shell .settings-record-heading { align-items: center; }
+.desk-shell .settings-record-heading > span { font-size: 12px; }
+.desk-shell .settings-facts { align-items: baseline; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); }
+.desk-shell .settings-fee { white-space: nowrap; font-size: clamp(22px, 2vw, 28px); font-variant-numeric: tabular-nums; letter-spacing: -.03em; }
+.desk-shell .settings-benefits { font-size: 13px; }
+.desk-shell .settings-actions { border-top: 1px solid var(--border); padding-top: 12px; font-size: 12px; }
+.desk-shell .settings-list-levels .settings-record { border-top: 3px solid var(--border); }
+.desk-shell .settings-record:has(.level-silver) { border-top-color: #aab8cb; }
+.desk-shell .settings-record:has(.level-gold) { border-top-color: #d8ac42; }
+.desk-shell .settings-record:has(.level-platinum) { border-top-color: #75aaa2; }
+.desk-shell .profile { padding-top: 22px; border-top-width: 2px; }
+.desk-shell .profile-grid { gap: 16px 24px; }
+.desk-shell .profile-grid > div { padding-bottom: 16px; }
+.desk-shell .filters { gap: 12px; margin-bottom: 20px; }
+.desk-shell .table-scroll { border-radius: 5px; }
+.desk-shell th { background: var(--surface); text-transform: none; }
+.desk-shell tbody tr:nth-child(even) { background: var(--surface); }
+@media (min-width: 1440px) {
+    .desk-shell .settings-list-levels { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .desk-shell .settings-list-levels .settings-record-heading { align-items: start; flex-direction: column; gap: 8px; }
+    .desk-shell .settings-list-levels .settings-facts { grid-template-columns: 1fr; gap: 12px; }
+}
+@media (min-width: 601px) and (max-width: 1150px) {
+    .desk-shell .dashboard-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 18px; }
+    .desk-shell .dashboard-summary > a:nth-child(3) { padding-left: 0; border-left: 0; }
+}
+@media (max-width: 1150px) {
+    .desk-shell .page { padding-inline: 24px; }
+    .desk-shell .ledger-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; }
+    .desk-shell .ledger-row > :nth-child(2) { grid-column: span 2; }
+}
+@media (max-width: 860px) {
+    .desk-shell .workspace-sidebar { padding: 12px 20px; gap: 12px; }
+    .desk-shell .page { padding: 24px 20px 36px; }
+}
+@media (max-width: 600px) {
+    .desk-shell .page-heading { align-items: start; gap: 12px; }
+    .desk-shell h1 { font-size: 24px; }
+    .desk-shell .dashboard-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 0; row-gap: 0; margin-bottom: 22px; }
+    .desk-shell .dashboard-summary > a,
+    .desk-shell .dashboard-summary > a:first-child { padding: 12px 0; border-left: 0; }
+    .desk-shell .dashboard-summary > a:nth-child(even) { padding-left: 16px; border-left: 1px solid var(--border); }
+    .desk-shell .dashboard-summary > a:nth-child(n+3) { border-top: 1px solid var(--border); }
+    .desk-shell .dashboard-summary strong { font-size: 24px; }
+    .desk-shell .desk-attention { padding-left: 14px; }
+    .desk-shell .desk-queue li { grid-template-columns: minmax(0, 1fr) auto; gap: 10px; }
+    .desk-shell .desk-queue li > a:last-child { grid-column: 1 / -1; justify-self: start; }
+    .desk-shell .ledger-row { grid-template-columns: minmax(0, 1fr) auto; padding: 14px; gap: 12px; }
+    .desk-shell .ledger-row > :first-child,
+    .desk-shell .ledger-row > :nth-child(2) { grid-column: 1 / -1; }
+    .desk-shell .ledger-row > div:nth-child(3) { text-align: left; }
+    .desk-shell .ledger-row > a:last-child { grid-column: 1 / -1; justify-self: start; }
+    .desk-shell .member-summary { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .desk-shell .member-summary > div,
+    .desk-shell .member-summary .summary-active { grid-column: auto; padding: 0 10px; }
+    html[data-theme="dark"] .desk-shell .member-summary .summary-total { background: transparent; border-color: transparent; }
+.desk-shell .member-summary > div:first-child { padding-left: 0; }
+    .desk-shell .member-summary dt { font-size: 11px; }
+    .desk-shell .member-summary dd { font-size: 23px; }
+    .desk-shell .settings-list { grid-template-columns: minmax(0, 1fr); }
+    .desk-shell .settings-record { padding: 18px; }
+}
+@media print {
+    body.desk-shell { --background: #fff; --surface: #fff; --ink: #111; --muted: #444; --border: #bbb; }
+    .desk-shell .page { padding: 0; }
+}

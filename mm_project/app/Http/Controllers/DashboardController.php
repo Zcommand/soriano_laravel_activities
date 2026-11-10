@@ -20,6 +20,7 @@ class DashboardController extends Controller
                 'paid' => MembershipTransaction::where('status', 'Paid')->count(),
                 'collected' => Payment::sum('amount'),
             ],
+            'attention' => MembershipTransaction::with('payments')->whereIn('status', ['Paid', 'Pending'])->orderBy('status')->latest('id')->limit(5)->get(),
             'transactions' => MembershipTransaction::with('payments')->latest('id')->limit(5)->get(),
         ]);
     }
