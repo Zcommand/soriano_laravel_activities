@@ -23,6 +23,7 @@
         <div class="field"><label for="type">Transaction type (required)</label><select id="type" name="type" required>@foreach(['Application', 'Renewal'] as $type)<option @selected(old('type', $selectedType) === $type)>{{ $type }}</option>@endforeach</select></div>
         <div class="field"><label for="membership_level_id">Level and fee (required)</label><select id="membership_level_id" name="membership_level_id" required><option value="">Select level</option>@foreach($levels as $level)<option value="{{ $level->id }}" @selected((string) old('membership_level_id', $selectedMember?->membership_level_id) === (string) $level->id)>{{ $level->name }} · ₱{{ number_format($level->fee, 2) }} · {{ $level->validity_days ? $level->validity_days.' days' : 'Validity not configured' }}</option>@endforeach</select></div>
     </div>
+    @include('transactions.location')
     <div class="field"><label for="notes">Notes (optional)</label><textarea id="notes" name="notes" rows="3" maxlength="2000">{{ old('notes') }}</textarea></div>
     <p class="settings-note">Application is for a first membership. Renewal requires a previously approved membership. The selected fee and level details are saved with this transaction.</p>
     <div class="form-actions"><button class="button" type="submit">Create Transaction</button><a class="button secondary-button" href="{{ route('transactions.index') }}">Cancel</a></div>
@@ -33,5 +34,8 @@
 @endif
 @endsection
 @push('scripts')
+    @if($members->isNotEmpty() && $levels->isNotEmpty())
+        @include('partials.location-scripts')
+    @endif
     <script src="{{ asset('js/transaction-form.js') }}" defer></script>
 @endpush

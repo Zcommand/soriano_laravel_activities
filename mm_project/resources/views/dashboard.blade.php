@@ -26,6 +26,13 @@
     </ul>
 </section>
 </div>
+<div class="dashboard-lower">
 <section class="workflow-section"><header class="desk-section-heading"><h2>Recent transactions</h2><a class="back-link" href="{{ route('transactions.index') }}">View all transactions</a></header>@include('transactions.list')</section>
+@include('partials.company-location')
+</div>
 <p class="desk-footnote">Collections represent simulated payment records; no online payments are processed.</p>
 @endsection
+
+@push('scripts')
+    @include('partials.location-scripts')
+@endpush

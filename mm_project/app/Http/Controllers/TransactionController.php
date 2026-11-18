@@ -46,7 +46,7 @@ class TransactionController extends Controller
     {
         $transaction = $workflow->create($request->validated(), $request->user());
 
-        return redirect()->route('transactions.show', $transaction)->with('success', 'Transaction saved. Record payment, then approve the membership.');
+        return redirect()->route('transactions.show', $transaction)->with('success', $transaction->type === 'Application' ? 'Application saved. A confirmation email has been queued. Record payment, then approve the membership.' : 'Renewal saved. Record payment, then approve the membership.');
     }
 
     public function show(MembershipTransaction $transaction): View

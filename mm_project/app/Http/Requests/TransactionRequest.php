@@ -18,6 +18,8 @@ class TransactionRequest extends FormRequest
             'member_id' => ['required', 'integer', 'exists:members,id'],
             'membership_level_id' => ['required', 'integer', 'exists:membership_levels,id'],
             'type' => ['required', Rule::in(['Application', 'Renewal'])],
+            'latitude' => ['nullable', 'required_with:longitude', 'numeric', 'between:-90,90'],
+            'longitude' => ['nullable', 'required_with:latitude', 'numeric', 'between:-180,180'],
             'notes' => ['nullable', 'string', 'max:2000'],
             'submission_key' => ['required', 'uuid'],
         ];

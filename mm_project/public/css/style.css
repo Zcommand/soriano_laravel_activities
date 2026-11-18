@@ -1976,3 +1976,23 @@ html[data-theme="dark"] .membership-app .status-expired, html[data-theme="dark"]
 .membership-app .void-audit p + p { margin-top: 8px; }
 .membership-app .payment-row > div > strong { display: block; font-variant-numeric: tabular-nums; }
 @media print { .membership-app .void-audit { border-color: #111; break-inside: avoid; } .membership-app .void-audit h2 { color: #111; } }
+
+/* Application location and its weather stay together within the form. */
+.membership-app .application-location { min-width: 0; margin: 0; padding: 20px; border: 1px solid var(--border); border-radius: 6px; background: var(--surface); }
+.membership-app .application-location legend { padding: 0 8px; font-weight: 650; font-size: 16px; }
+.membership-app .application-location > p { font-size: 12px; line-height: 1.6; }
+.membership-app .application-map { height: 300px; width: 100%; margin: 14px 0 8px; background: var(--soft-surface); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; color-scheme: light; }
+.membership-app .map-placeholder { padding: 20px; color: var(--muted); font-size: 13px; }
+.membership-app .coordinate-fields { margin-top: 16px; }
+.membership-app .location-weather { display: flex; align-items: start; justify-content: space-between; gap: 16px; border-top: 1px solid var(--border); padding-top: 16px; }
+.membership-app .location-weather h2 { font-size: 13px; margin-bottom: 6px; }
+.membership-app .location-weather p { margin-top: 4px; font-size: 13px; }
+.membership-app .location-weather [data-weather-summary] { font-size: 15px; font-weight: 600; }
+.membership-app .location-weather > a { font-size: 12px; white-space: nowrap; min-height: 44px; padding-top: 8px; }
+.membership-app .application-location .location-credit { margin-top: 12px; font-size: 11px; }
+@media (max-width: 600px) {
+    .membership-app .application-location { padding: 16px; }
+    .membership-app .application-map { height: 240px; }
+    .membership-app .location-weather { flex-direction: column; gap: 4px; }
+}
+@media print { .membership-app .application-location { break-inside: avoid; } }

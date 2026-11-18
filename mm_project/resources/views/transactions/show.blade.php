@@ -17,6 +17,12 @@
     <div><dt>Validity</dt><dd>{{ $transaction->validity_days ? $transaction->validity_days.' days' : 'Configure before approval' }}</dd></div>
     <div><dt>Starts</dt><dd>{{ $transaction->starts_at?->format('M j, Y H:i') ?? 'Awaiting approval' }}</dd></div>
     <div><dt>Expires</dt><dd>{{ $transaction->expires_at?->format('M j, Y H:i') ?? 'Awaiting approval' }}</dd></div>
+    @if($transaction->latitude !== null && $transaction->longitude !== null)
+    <div><dt>Application location</dt><dd><a href="https://www.google.com/maps/search/?api=1&amp;query={{ $transaction->latitude }},{{ $transaction->longitude }}" target="_blank" rel="noopener noreferrer">{{ $transaction->latitude }}, {{ $transaction->longitude }} ↗</a></dd></div>
+    @endif
+    @if($transaction->application_email_queued_at)
+    <div><dt>Application email queued</dt><dd>{{ $transaction->applicant_email }}<br>{{ $transaction->application_email_queued_at->format('M j, Y H:i') }}<br><span class="muted">Delivery is processed by the queue worker; this is not email ownership verification.</span></dd></div>
+    @endif
     <div><dt>Created by</dt><dd>{{ $transaction->creator->name }}</dd></div>
     <div><dt>Approved by</dt><dd>{{ $transaction->approver?->name ?? 'Not approved' }}</dd></div>
     <div><dt>Approved on</dt><dd>{{ $transaction->approved_at?->format('M j, Y H:i') ?? 'Not approved' }}</dd></div>

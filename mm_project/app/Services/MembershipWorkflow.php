@@ -7,8 +7,10 @@ use App\Models\MembershipLevel;
 use App\Models\MembershipTransaction;
 use App\Models\Payment;
 use App\Models\User;
+use App\Notifications\MembershipApplicationSubmitted;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\ValidationException;
 
 class MembershipWorkflow
@@ -38,7 +40,7 @@ class MembershipWorkflow
             $level = MembershipLevel::lockForUpdate()->findOrFail($data['membership_level_id']);
             $member->load('category');
 
-            return MembershipTransaction::create([
+            $application = MembershipTransaction::create([
                 'submission_key' => $data['submission_key'], 'member_id' => $member->id,
                 'membership_level_id' => $level->id, 'membership_category_id' => $member->membership_category_id,
                 'created_by' => $staff->id, 'type' => $data['type'],
@@ -48,7 +50,16 @@ class MembershipWorkflow
                 'level_name' => $level->name, 'category_name' => $member->category->name,
                 'fee' => $level->fee, 'validity_days' => $level->validity_days,
                 'benefits' => $level->benefits, 'notes' => $data['notes'] ?? null,
+                'latitude' => $data['latitude'] ?? null, 'longitude' => $data['longitude'] ?? null,
+                'applicant_email' => $member->email,
             ]);
+            if ($application->type === 'Application') {
+                Notification::route('mail', $application->applicant_email)
+                    ->notify(new MembershipApplicationSubmitted($application));
+                $application->update(['application_email_queued_at' => now()]);
+            }
+
+            return $application;
         }, 3);
     }
 

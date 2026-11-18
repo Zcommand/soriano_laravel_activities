@@ -20,6 +20,7 @@ class MembershipTransaction extends Model
         'submission_key', 'member_id', 'membership_level_id', 'membership_category_id',
         'created_by', 'approved_by', 'type', 'status', 'member_name', 'membership_number',
         'level_name', 'category_name', 'fee', 'validity_days', 'benefits', 'notes',
+        'latitude', 'longitude', 'applicant_email', 'application_email_queued_at',
         'previous_membership_level_id', 'cancellation_reason', 'approved_at', 'starts_at', 'expires_at',
     ];
 
@@ -36,7 +37,7 @@ class MembershipTransaction extends Model
 
     protected function casts(): array
     {
-        return ['fee' => 'decimal:2', 'validity_days' => 'integer', 'approved_at' => 'immutable_datetime', 'starts_at' => 'immutable_datetime', 'expires_at' => 'immutable_datetime'];
+        return ['latitude' => 'decimal:7', 'longitude' => 'decimal:7', 'application_email_queued_at' => 'immutable_datetime', 'fee' => 'decimal:2', 'validity_days' => 'integer', 'approved_at' => 'immutable_datetime', 'starts_at' => 'immutable_datetime', 'expires_at' => 'immutable_datetime'];
     }
 
     public function member(): BelongsTo

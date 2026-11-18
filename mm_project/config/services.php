@@ -35,4 +35,13 @@ return [
         ],
     ],
 
+    'google_maps' => [
+        'key' => env('GOOGLE_MAPS_KEY'),
+        'office_latitude' => 14.5995,
+        'office_longitude' => 120.9842,
+        'office_location' => 'Manila, Philippines',
+    ],
+
+    'openweather' => ['key' => env('OPENWEATHER_KEY')],
+
 ];
