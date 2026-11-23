@@ -15,6 +15,8 @@ return [
 
     'name' => env('APP_NAME', 'Membership Management'),
 
+    'demo_login_hint' => env('DEMO_LOGIN_HINT', true),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment

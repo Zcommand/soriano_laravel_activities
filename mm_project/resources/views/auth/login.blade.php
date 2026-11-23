@@ -24,4 +24,17 @@
         </div>
         <button class="button" type="submit">Sign in</button>
     </form>
+    @if(config('app.demo_login_hint'))
+        <details class="demo-login-hint">
+            <summary>Professor / demo login</summary>
+            <div class="demo-login-content">
+                <p>Use this shared administrator account to check the project.</p>
+                <dl>
+                    <div><dt>Email</dt><dd><code>testing@gmail.com</code></dd></div>
+                    <div><dt>Password</dt><dd><code>testinglngto</code></dd></div>
+                </dl>
+                <p class="muted">Public academic demo. Use fictional data only.</p>
+            </div>
+        </details>
+    @endif
 @endsection

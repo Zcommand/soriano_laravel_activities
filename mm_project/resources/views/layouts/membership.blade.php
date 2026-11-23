@@ -6,7 +6,7 @@
     <title>@yield('title', 'Members') | Membership Management</title>
     <link rel="icon" type="image/png" href="{{ asset('images/brand/logo-symbol.png') }}">
     <script src="{{ asset('js/theme.js') }}"></script>
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}?v=members-24">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}?v=members-25">
     <link rel="stylesheet" href="{{ asset('css/desk.css') }}?v=3">
 </head>
 <body class="membership-app {{ request()->routeIs('login', 'login.store') ? '' : 'workspace-page desk-shell' }}">

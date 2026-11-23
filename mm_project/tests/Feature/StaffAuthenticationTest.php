@@ -65,3 +65,22 @@ it('creates a staff account with a hashed password through the setup command', f
     expect($user->password)->not->toBe('Private-test-password');
     expect(Hash::check('Private-test-password', $user->password))->toBeTrue();
 });
+
+it('shows the public checking credentials when the demo hint is enabled', function () {
+    expect(config('app.demo_login_hint'))->toBeTrue();
+
+    $this->get(route('login'))->assertOk()
+        ->assertSee('Professor / demo login')
+        ->assertSee('testing@gmail.com')
+        ->assertSee('testinglngto')
+        ->assertSee('Use fictional data only.');
+});
+
+it('removes the credentials from the response when the demo hint is disabled', function () {
+    config(['app.demo_login_hint' => false]);
+
+    $this->get(route('login'))->assertOk()
+        ->assertDontSee('Professor / demo login')
+        ->assertDontSee('testing@gmail.com')
+        ->assertDontSee('testinglngto');
+});

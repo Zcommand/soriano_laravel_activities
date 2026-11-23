@@ -1996,3 +1996,39 @@ html[data-theme="dark"] .membership-app .status-expired, html[data-theme="dark"]
     .membership-app .location-weather { flex-direction: column; gap: 4px; }
 }
 @media print { .membership-app .application-location { break-inside: avoid; } }
+
+.membership-app .demo-login-hint {
+    margin-top: 24px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.membership-app .demo-login-hint summary {
+    padding: 14px 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.membership-app .demo-login-content {
+    display: grid;
+    gap: 14px;
+    padding: 0 16px 16px;
+    font-size: 13px;
+}
+
+.membership-app .demo-login-content dl {
+    display: grid;
+    gap: 10px;
+    margin: 0;
+}
+
+.membership-app .demo-login-content dt {
+    color: var(--muted);
+}
+
+.membership-app .demo-login-content dd {
+    margin: 2px 0 0;
+    overflow-wrap: anywhere;
+    user-select: all;
+}
