@@ -6,7 +6,7 @@
     <title>@yield('title', 'Members') | Membership Management</title>
     <link rel="icon" type="image/png" href="{{ asset('images/brand/logo-symbol.png') }}">
     <script src="{{ asset('js/theme.js') }}"></script>
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}?v=members-25">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}?v=members-28">
     <link rel="stylesheet" href="{{ asset('css/desk.css') }}?v=3">
 </head>
 <body class="membership-app {{ request()->routeIs('login', 'login.store') ? '' : 'workspace-page desk-shell' }}">
@@ -55,10 +55,13 @@
     </aside>
     @endunless
     <main id="main-content" class="page @yield('page-class')" tabindex="-1">
-        @if(session('success'))
-            <p class="notice" role="status">{{ session('success') }}</p>
-        @endif
-        @yield('content')
+        <div class="page-content">
+            @if(session('success'))
+                <p class="notice" role="status">{{ session('success') }}</p>
+            @endif
+            @yield('content')
+        </div>
+        @include('partials.academic-footer')
     </main>
     @stack('scripts')
     <script src="{{ asset('js/print.js') }}" defer></script>

@@ -2032,3 +2032,39 @@ html[data-theme="dark"] .membership-app .status-expired, html[data-theme="dark"]
     overflow-wrap: anywhere;
     user-select: all;
 }
+
+.membership-app .academic-footer {
+    border-top: 1px solid var(--border);
+    margin-top: 48px;
+    padding-top: 16px;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.6;
+    text-align: center;
+}
+
+body.membership-app {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-height: 100dvh;
+}
+
+.membership-app .page {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.membership-app .page-content {
+    flex: 1;
+    min-width: 0;
+}
+
+@media print {
+    body.membership-app, .membership-app .page, .membership-app .page-content {
+        display: block;
+        min-height: 0;
+    }
+}
