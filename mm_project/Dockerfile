@@ -11,7 +11,7 @@ WORKDIR /var/www/html
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends git unzip libicu-dev libzip-dev libonig-dev \
-    && docker-php-ext-install -j"$(nproc)" intl mbstring pdo_mysql zip opcache \
+    && docker-php-ext-install -j"$(nproc)" intl mbstring pdo_mysql zip opcache pcntl \
     && a2enmod rewrite \
     && sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf \
     && sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf \

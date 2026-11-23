@@ -2,10 +2,12 @@
 
 namespace App\Providers;
 
+use App\Mail\BrevoTransport;
 use App\Models\User;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
@@ -25,6 +27,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Mail::extend('brevo', fn (array $config): BrevoTransport => new BrevoTransport((string) config('services.brevo.key')));
+
         Gate::define('manage-members', fn (User $user): bool => $user->is_admin === true);
 
         RateLimiter::for('staff-login', fn (Request $request) => [

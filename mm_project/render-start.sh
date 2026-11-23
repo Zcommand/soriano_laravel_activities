@@ -29,4 +29,14 @@ chown -R www-data:www-data storage bootstrap/cache
 sed -i "s/^Listen 80$/Listen ${PORT:-10000}/" /etc/apache2/ports.conf
 sed -i "s/<VirtualHost \*:80>/<VirtualHost *:${PORT:-10000}>/" /etc/apache2/sites-available/000-default.conf
 
+if [ "${MAIL_MAILER:-log}" = "brevo" ]; then
+    : "${BREVO_API_KEY:?Set BREVO_API_KEY before enabling Brevo delivery.}"
+    : "${MAIL_FROM_ADDRESS:?Set your verified Brevo sender address.}"
+    if [ "${QUEUE_CONNECTION:-database}" != "database" ]; then
+        echo 'Brevo deployment requires QUEUE_CONNECTION=database.' >&2
+        exit 1
+    fi
+    exec bash render-processes.sh
+fi
+
 exec apache2-foreground

@@ -7,6 +7,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Symfony\Component\Mime\Email;
 
 class MembershipApplicationSubmitted extends Notification implements ShouldQueue
 {
@@ -33,6 +34,9 @@ class MembershipApplicationSubmitted extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
+            ->withSymfonyMessage(function (Email $message): void {
+                $message->getHeaders()->addTextHeader('X-Idempotency-Key', $this->application->submission_key);
+            })
             ->subject('Membership application received')
             ->greeting('Hello '.$this->application->member_name.',')
             ->line('We received your membership application.')
